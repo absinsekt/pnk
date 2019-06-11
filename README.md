@@ -1,2 +1,2 @@
 # pnk
-anti-establishment dead simple web framework inspired by django
+Anti-establishment dead simple web template inspired by django

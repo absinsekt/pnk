@@ -1,0 +1,11 @@
+[package]
+name = "pnk"
+version = "0.1.0"
+authors = ["Stanislav Zholudev <absinsekt@protonmail.com>"]
+edition = "2018"
+
+[dependencies]
+actix-rt = "0.2.2"
+actix-web = "1.0.0"
+
+futures = "0.1.25"
