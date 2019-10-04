@@ -1,6 +1,6 @@
 import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import { CleanCSSPlugin } from './clean-css-plugin';
 
 export const ProdPlugins = [
@@ -13,7 +13,7 @@ export const ProdPlugins = [
   }),
 
   new HtmlWebpackPlugin({
-    template: 'www/base.html',
-    filename: 'templates/base.html'
+    template: 'src/index.html',
+    filename: '../../templates/base.html'
   })
 ];

@@ -1,9 +1,12 @@
+import * as autoprefixer from 'autoprefixer';
+import * as cssnano from 'cssnano';
+
 export const DevLoaders = {
   cssLoaders: [
     'style-loader',
     {
       loader: 'postcss-loader',
-      options: { sourceMap: true }
+      options: { sourceMap: true, plugins: [ autoprefixer(), cssnano() ] }
     },
     'css-loader'
   ],
@@ -15,9 +18,7 @@ export const DevLoaders = {
     },
     {
       loader: 'postcss-loader',
-      options: {
-        sourceMap: true
-      }
+      options: { sourceMap: true, plugins: [ autoprefixer(), cssnano() ] }
     },
     'stylus-loader'
   ],

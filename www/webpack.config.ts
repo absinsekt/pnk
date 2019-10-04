@@ -1,4 +1,6 @@
+import webpack from 'webpack';
 import * as path from 'path';
+import * as stylus from 'svelte-preprocess/src/processors/stylus';
 
 import {
   DevLoaders,
@@ -7,86 +9,76 @@ import {
   ProdPlugins,
 } from './webpack';
 
-const config = (env, argv) => {
+const config: (env, argv) => webpack.Configuration = (env, argv) => {
   const isProduction = argv.mode === 'production';
-  const isDevelopment = argv.mode === 'development';
-  const minimize = (isProduction || (env && env.mini === true));
 
   return {
     entry: {
-      app: [
-        'tsx/index',
-        'styles/index',
-        'vanilla/index'
+      bundle: [
+        './src/index',
+        './src/styles/index'
       ]
     },
 
     resolve: {
-      extensions: ['.ts', '.js', '.tsx', '.styl'],
-      modules: [path.join(__dirname, 'www'), './node_modules'],
       alias: {
-        assets: path.resolve(__dirname, 'www/assets')
-      }
+        svelte: path.resolve('node_modules', 'svelte'),
+        '@components': path.resolve(__dirname, 'src/components/'),
+        '@services': path.resolve(__dirname, 'src/services/'),
+        '@assets': path.resolve(__dirname, 'src/assets/')
+      },
+      extensions: ['.ts', '.js', '.svelte', '.styl']
     },
 
     output: {
-      path: path.join(__dirname, 'dist'),
-      filename: isDevelopment
-        ? '[name].js'
-        : '[name][hash].js',
+      path: path.resolve(__dirname, 'dist'),
+      filename: isProduction
+        ? '[name][hash].js'
+        : '[name].js',
 
       publicPath: '/dist/'
     },
 
     devServer: {
+      contentBase: 'dist',
       public: '127.0.0.1',
-      port: '9001',
+      port: '5001',
       disableHostCheck: true,
       hot: true
     },
 
-    watch: isDevelopment,
-
-    optimization: {
-      concatenateModules: true,
-      removeAvailableModules: true,
-      removeEmptyChunks: true,
-      splitChunks: {
-        cacheGroups: {
-          default: false,
-          vendor: {
-            test: /node_modules/,
-            name: 'vendor',
-            chunks: 'all'
-          }
-        },
-      },
-      minimize
-    },
+    watch: !isProduction,
 
     module: {
       rules: [{
-        test: /\.(j|t)sx?$/,
+        test: /\.svelte$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
-          // ,
-          // options: {
-          //   presets: [
-          //     '@babel/preset-env'
-          //   ]
-          // }
+          loader: 'svelte-loader',
+          options: {
+            emitCss: true,
+            hotReload: true,
+            preprocess: [stylus()]
+          }
+        }
+      }, {
+        test: /\.(j|t)s$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', { modules: 'commonjs' }],
+              '@babel/preset-typescript'
+            ]
+          }
         }
       }, {
         test: /\.css$/,
-        use: isProduction ?
-          ProdLoaders.cssLoaders :
-          DevLoaders.cssLoaders
+        use: isProduction ? ProdLoaders.cssLoaders : DevLoaders.cssLoaders
       }, {
         test: /\.styl$/,
-        use: isProduction ?
-          ProdLoaders.stylusLoaders :
-          DevLoaders.stylusLoaders
+        use: isProduction ? ProdLoaders.stylusLoaders : DevLoaders.stylusLoaders
       }, {
         test: /\.(svg|eot|woff|ttf|woff2|otf)$/,
         loader: {
@@ -113,10 +105,28 @@ const config = (env, argv) => {
       }]
     },
 
-    plugins: isProduction
-      ? ProdPlugins
-      : DevPlugins
+    mode: argv.mode,
+    plugins: isProduction ? ProdPlugins : DevPlugins,
+    devtool: isProduction ? false : 'source-map',
+
+    optimization: {
+      concatenateModules: true,
+      removeAvailableModules: true,
+      removeEmptyChunks: true,
+      splitChunks: {
+        cacheGroups: {
+          default: false,
+          vendor: {
+            test: /node_modules/,
+            name: 'vendor',
+            chunks: 'all'
+          }
+        },
+      },
+
+      minimize: isProduction
+    }
   };
-};
+}
 
 export default config;

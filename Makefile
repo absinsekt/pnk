@@ -3,7 +3,7 @@
 
 dev:
 	@tmux new-session -d 'cd www; npm run dev'; \
-tmux split-window -h 'PNK_DEBUG=True cargo-watch -x run'; \
+tmux split-window -h 'PNK_DEBUG=True go run main.go'; \
 tmux attach
 
 

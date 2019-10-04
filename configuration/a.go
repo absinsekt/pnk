@@ -8,7 +8,7 @@ import (
 var (
 	Debug        = getEnv("PNK_DEBUG", false).(bool)
 	HostAddress  = getEnv("PNK_HOST", "127.0.0.1").(string)
-	Port         = getEnv("PNK_PORT", 9000).(int)
+	Port         = getEnv("PNK_PORT", 5000).(int)
 	TemplatePath = getEnv("PNK_TEMPLATE_PATH", "templates/").(string)
 	DbHost       = getEnv("PNK_DB_HOST", "127.0.0.1").(string)
 	DbName       = getEnv("PNK_DB_NAME", "pnk_db").(string)
