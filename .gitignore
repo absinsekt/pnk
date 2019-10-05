@@ -11,9 +11,10 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-.vscode/
-node_modules/
-dist/
+/.vscode/
+/templates/base.html
+/www/node_modules/
+/www/dist/
 
 
 #Added by cargo

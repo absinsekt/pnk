@@ -4,10 +4,6 @@ import * as cssnano from 'cssnano';
 export const DevLoaders = {
   cssLoaders: [
     'style-loader',
-    {
-      loader: 'postcss-loader',
-      options: { sourceMap: true, plugins: [ autoprefixer(), cssnano() ] }
-    },
     'css-loader'
   ],
 

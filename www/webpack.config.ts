@@ -1,5 +1,6 @@
 import webpack from 'webpack';
 import * as path from 'path';
+import * as autoProcess from 'svelte-preprocess/src/autoProcess';
 import * as stylus from 'svelte-preprocess/src/processors/stylus';
 
 import {
@@ -23,8 +24,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
     resolve: {
       alias: {
         svelte: path.resolve('node_modules', 'svelte'),
-        '@components': path.resolve(__dirname, 'src/components/'),
-        '@services': path.resolve(__dirname, 'src/services/'),
+        '@components': path.resolve(__dirname, 'src/app/components/'),
         '@assets': path.resolve(__dirname, 'src/assets/')
       },
       extensions: ['.ts', '.js', '.svelte', '.styl']
@@ -44,7 +44,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
       public: '127.0.0.1',
       port: '5001',
       disableHostCheck: true,
-      hot: true
+      hot: false
     },
 
     watch: !isProduction,
@@ -58,7 +58,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
           options: {
             emitCss: true,
             hotReload: true,
-            preprocess: [stylus()]
+            preprocess: [autoProcess(), stylus()]
           }
         }
       }, {
@@ -70,6 +70,9 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
             presets: [
               ['@babel/preset-env', { modules: 'commonjs' }],
               '@babel/preset-typescript'
+            ],
+            plugins: [
+              'transform-class-properties',
             ]
           }
         }

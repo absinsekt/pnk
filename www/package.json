@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "devDependencies": {
     "@babel/core": "^7.6.2",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/polyfill": "^7.6.0",
     "@babel/preset-env": "^7.6.2",
     "@babel/preset-typescript": "^7.6.0",
@@ -34,7 +35,7 @@
   },
   "scripts": {
     "build": "npx webpack --mode=production --progress --color",
-    "dev": "npx webpack-dev-server --mode development --hot --inline --progress"
+    "dev": "npx webpack-dev-server --mode development --inline --progress"
   },
   "dependencies": {
     "@types/webpack": "^4.39.2"
