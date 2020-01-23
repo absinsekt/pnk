@@ -1,1 +1,5 @@
-{% extends "base.html" %}
+{{ template "base.html" . }}
+{{ define "content" }}
+    <h2>{{ .User.Name }}</h2>
+    <h3>{{ .User.Phone }}</h3>
+{{ end }}
