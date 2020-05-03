@@ -1,14 +1,13 @@
 import webpack from 'webpack';
 import * as path from 'path';
-import * as autoProcess from 'svelte-preprocess/src/autoProcess';
-import * as stylus from 'svelte-preprocess/src/processors/stylus';
+import { autoPreprocess } from 'svelte-preprocess/dist/autoProcess';
 
 import {
   DevLoaders,
   DevPlugins,
   ProdLoaders,
   ProdPlugins,
-} from './webpack';
+} from './wp';
 
 const config: (env, argv) => webpack.Configuration = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -16,18 +15,19 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
   return {
     entry: {
       bundle: [
-        './src/index',
-        './src/styles/index'
+        './src/styles/index',
+        './src/assets/icons.font',
+        './src/app/index',
       ]
     },
 
     resolve: {
+      extensions: ['.mjs', '.ts', '.js', '.svelte', '.styl'],
       alias: {
-        svelte: path.resolve('node_modules', 'svelte'),
-        '@components': path.resolve(__dirname, 'src/app/components/'),
-        '@assets': path.resolve(__dirname, 'src/assets/')
-      },
-      extensions: ['.ts', '.js', '.svelte', '.styl']
+        'app': path.resolve(__dirname, 'src/app'),
+        'styles': path.resolve(__dirname, 'src/styles'),
+        'assets': path.resolve(__dirname, 'src/assets'),
+      }
     },
 
     output: {
@@ -42,7 +42,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
     devServer: {
       contentBase: 'dist',
       public: '127.0.0.1',
-      port: '5001',
+      port: 5001,
       disableHostCheck: true,
       hot: false
     },
@@ -51,31 +51,25 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
 
     module: {
       rules: [{
+        test: /\.ts$/,
+        include: path.resolve(__dirname, 'src/app'),
+        use: {
+          loader: 'ts-loader',
+        }
+      }, {
         test: /\.svelte$/,
-        exclude: /node_modules/,
         use: {
           loader: 'svelte-loader',
           options: {
             emitCss: true,
-            hotReload: true,
-            preprocess: [autoProcess(), stylus()]
-          }
-        }
-      }, {
-        test: /\.(j|t)s$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['@babel/preset-env', { modules: 'commonjs' }],
-              '@babel/preset-typescript'
-            ],
-            plugins: [
-              'transform-class-properties',
-            ]
-          }
-        }
+            hotReload: false, //if true - Cannot read property '_debugName' of undefined
+            preprocess: [autoPreprocess({
+              stylus: {
+                paths: [path.resolve(__dirname, 'src')]
+              }
+            })],
+          },
+        },
       }, {
         test: /\.css$/,
         use: isProduction ? ProdLoaders.cssLoaders : DevLoaders.cssLoaders
@@ -101,7 +95,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
           }
         }
       }, {
-        test: /\.font\.js/,
+        test: /\.font\.js$/,
         use: isProduction ?
           ProdLoaders.fontLoaders :
           DevLoaders.fontLoaders

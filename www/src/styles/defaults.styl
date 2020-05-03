@@ -1,0 +1,50 @@
+*
+  box-sizing: border-box
+
+html
+  height: 100%
+  line-height: 1
+  touch-action: manipulation
+  font-smooth: always
+  -webkit-font-smoothing: subpixel-antialiased
+  -moz-osx-font-smoothing: auto
+
+body
+  font-family: $fnt-srf
+  font-weight: 400
+  color: $clr0-d
+
+  &.noscroll
+    overflow-y: hidden
+
+p, img, h1, h2, h3, h4, h5, h6
+  margin: 0
+  padding: 0
+
+img
+  height: auto
+  max-width: 100%
+
+h1, h2, h3, h4, h5, h6
+  text-transform: uppercase
+  word-wrap: break-word
+
+a
+  color: $clr0-d
+  text-decoration: none
+  transition: color $tran-x1
+
+  &:hover
+    color: $clr2
+
+ul
+  margin: 0
+  padding: 0
+
+  li
+    list-style: none
+
+    a
+      font-size: .875rem
+      font-weight: 600
+      text-transform: uppercase

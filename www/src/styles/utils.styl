@@ -1,48 +1,92 @@
-for i in 1..6
-  h{i}
-    margin: 0
-    padding: 0
+.upper
+  text-transform: uppercase
 
-for i in 1..20
+.nofs
+  font-size: 0
+
+.inl
+  inl()
+
+for i in 0..20
+  .ma-{i}
+    margin: unit(i * $1, 'rem') !important
+
+    @media(max-width: $bp[sm])
+      margin: unit(i * $05, 'rem') !important
+
   .mv-{i}
-    margin-top: unit(i, 'rem') !important
-    margin-bottom: unit(i, 'rem') !important
+    margin-top: unit(i * $1, 'rem') !important
+    margin-bottom: unit(i * $1, 'rem') !important
+
+    @media(max-width: $bp[sm])
+      margin-top: unit(i * $05, 'rem') !important
+      margin-bottom: unit(i * $05, 'rem') !important
 
   .mh-{i}
-    margin-left: unit(i, 'rem') !important
-    margin-right: unit(i, 'rem') !important
+    margin-left: unit(i * $1, 'rem') !important
+    margin-right: unit(i * $1, 'rem') !important
+
+    @media(max-width: $bp[sm])
+      margin-left: unit(i * $05, 'rem') !important
+      margin-right: unit(i * $05, 'rem') !important
+
+  .pa-{i}
+    padding: unit(i * $1, 'rem') !important
+
+    @media(max-width: $bp[sm])
+      padding: unit(i * $05, 'rem') !important
 
   .pv-{i}
-    padding-top: unit(i, 'rem') !important
-    padding-bottom: unit(i, 'rem') !important
+    padding-top: unit(i * $1, 'rem') !important
+    padding-bottom: unit(i * $1, 'rem') !important
+
+    @media(max-width: $bp[sm])
+      padding-top: unit(i * $05, 'rem') !important
+      padding-bottom: unit(i * $05, 'rem') !important
 
   .ph-{i}
-    padding-left: unit(i, 'rem') !important
-    padding-right: unit(i, 'rem') !important
+    padding-left: unit(i * $1, 'rem') !important
+    padding-right: unit(i * $1, 'rem') !important
+
+    @media(max-width: $bp[sm])
+      padding-left: unit(i * $05, 'rem') !important
+      padding-right: unit(i * $05, 'rem') !important
 
   .pt-{i}
-    padding-top: unit(i, 'rem') !important
+    padding-top: unit(i * $1, 'rem') !important
+
+    @media(max-width: $bp[sm])
+      padding-top: unit(i * $05, 'rem') !important
 
   .pb-{i}
-    padding-bottom: unit(i, 'rem') !important
+    padding-bottom: unit(i * $1, 'rem') !important
 
-  .p-{i}
-    padding: unit(i, 'rem') !important
+    @media(max-width: $bp[sm])
+      padding-bottom: unit(i * $05, 'rem') !important
 
   .mt-{i}
-    margin-top: unit(i, 'rem') !important
+    margin-top: unit(i * $1, 'rem') !important
+
+    @media(max-width: $bp[sm])
+      margin-top: unit(i * $05, 'rem') !important
 
   .mb-{i}
-    margin-bottom: unit(i, 'rem') !important
+    margin-bottom: unit(i * $1, 'rem') !important
 
-  .ml-{i}
-    margin-left: unit(i, 'rem') !important
+    @media(max-width: $bp[sm])
+      margin-bottom: unit(i * $05, 'rem') !important
 
   .mr-{i}
-    margin-right: unit(i, 'rem') !important
+    margin-right: unit(i * $1, 'rem') !important
 
-  .m-{i}
-    margin: unit(i, 'rem') !important
+    @media(max-width: $bp[sm])
+      margin-right: unit(i * $05, 'rem') !important
+
+  .ml-{i}
+    margin-left: unit(i * $1, 'rem') !important
+
+    @media(max-width: $bp[sm])
+      margin-left: unit(i * $05, 'rem') !important
 
   .w-{i * 10}
     width: unit(i * 10, '%') !important
@@ -50,18 +94,62 @@ for i in 1..20
   .h-{i * 10}
     height: unit(i * 10, '%') !important
 
+for $k, $v in $bp
+  .nomb-{$k}
+    @media(min-width: $v)
+      margin-bottom: 0 !important
+
 .ta-l
-  text-align: left !important
+  text-align: left
 
 .ta-c
-  text-align: center !important
+  text-align: center
 
 .ta-r
   text-align: right  !important
 
-.upper
-  text-transform: uppercase
+.fl-l
+  float: left
 
-.nomp
-  margin: 0
-  padding: 0
+.fl-r
+  float: right
+
+$ta = {
+  l: left
+  c: center
+  r: right
+}
+
+for $tak, $tav in $ta
+  for $k, $v in $bp
+    .ta-{$k}-{$tak}
+      @media(min-width: $v)
+        text-align: $tav
+
+for $k, $v in $bp
+  .{$k}-visible
+    display: none
+
+    @media(max-width: $v)
+      display: unset
+
+  .{$k}-hidden
+    @media(max-width: $v)
+      display: none !important
+
+.va-m
+  vertical-align: middle
+
+.bd-t
+  border-top: 1px solid $mainFont !important
+
+.bd-b
+  border-bottom: 1px solid $mainFont !important
+
+.fx-c
+  display: flex
+  flex-direction: column
+  width: 100%
+  height: 100%
+  align-items: center
+  justify-content: center
