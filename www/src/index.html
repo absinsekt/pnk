@@ -5,16 +5,9 @@
 
   <body>
 {{ block "content" . }}
-    <h1>Punk's not dead!</h1>
+<!-- content -->
 {{ end }}
 
-    <form action="." method="POST" data-type="fetch">
-      <input type="text" name="firstname" required />
-      <input type="text" name="lastname" required />
-      <input type="tel" name="phone" />
-
-      <input type="submit" value="Ololo!" />
-    </form>
 {{ template "_counters.html" }}
   </body>
 </html>

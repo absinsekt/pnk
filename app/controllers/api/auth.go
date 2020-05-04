@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/absinsekt/pnk/configuration"
+
 	"github.com/go-pg/pg/v9"
 
-	"github.com/absinsekt/pnk/controllers/sessions"
 	"github.com/absinsekt/pnk/models/user"
 	"github.com/absinsekt/pnk/utils/responses"
+	"github.com/absinsekt/pnk/utils/sessions"
 
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
@@ -34,6 +36,7 @@ func handleLogin(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	// try to authenticate user
 	usr, err := user.Auth(creds.Login, creds.Password)
 	if err != nil {
 		if err == pg.ErrNoRows {
@@ -46,17 +49,23 @@ func handleLogin(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	session, err := sessions.SessionStore.Get(req, "punksnotdead")
+	// store usersession in cookie
+	session, err := sessions.SessionStore.Get(req, configuration.SessionNS)
 	if err != nil {
 		log.Error(err)
 	}
 
-	session.Values["user"] = usr
+	session.Values["user"] = &user.SessionData{
+		ID:       usr.ID,
+		Username: usr.Username,
+		Email:    usr.Email,
+	}
 
 	if err := session.Save(req, res); err != nil {
 		log.Error(err)
+		return
 	}
 
-	res.WriteHeader(http.StatusAccepted)
-	responses.WriteJSON(res, usr)
+	// done
+	responses.WriteJSON(res, http.StatusAccepted, usr)
 }

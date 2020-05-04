@@ -22,8 +22,9 @@ var (
 	SMTPPort             = getEnv("PNK_SMTP_PORT", 465).(int)
 	SMTPUser             = getEnv("PNK_SMTP_USER", "google@gmail.com").(string)
 	SMTPPassword         = getEnv("PNK_SMTP_PASSWORD", "punksnotdead").(string)
-	SessionAuthKey       = getEnv("PNK_SESSION_AUTH_KEY", securecookie.GenerateRandomKey(64)).([]byte)
-	SessionEncryptionKey = getEnv("PNK_SESSION_ENCRYPTION_KEY", securecookie.GenerateRandomKey(32)).([]byte)
+	SessionNS            = getEnv("SESSION_NS", "punksnotdead").(string)
+	SessionAuthKey       = getEnv("PNK_SESSION_AUTH_KEY", string(securecookie.GenerateRandomKey(64))).(string)
+	SessionEncryptionKey = getEnv("PNK_SESSION_ENCRYPTION_KEY", string(securecookie.GenerateRandomKey(32))).(string)
 
 	SecondsRarely, _ = time.ParseDuration(
 		fmt.Sprintf("%ds", getEnv("PNK_SECONDS_RARELY", 180).(int)))

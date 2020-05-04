@@ -49,7 +49,7 @@ function handleChange(e) {
 
 function initForms() {
   document
-    .querySelectorAll('form[data-type="fetch"]')
+    .querySelectorAll('form[data-type="managed"]')
 
     .forEach((form: HTMLFormElement) => {
       form.onsubmit = handleSubmit;

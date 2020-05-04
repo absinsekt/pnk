@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 
+	"github.com/absinsekt/pnk/controllers/admin"
 	"github.com/absinsekt/pnk/controllers/api"
 	"github.com/absinsekt/pnk/controllers/www"
 	"github.com/absinsekt/pnk/utils"
@@ -26,10 +27,11 @@ func NewControllersRouter() *mux.Router {
 	templateSet, err = core.NewTemplateSet(configuration.TemplatePath)
 	utils.Check(err, true)
 
-	root := mux.NewRouter()
+	root := mux.NewRouter().StrictSlash(true)
 
 	// mount all subpaths
 	www.MountIndex(root, templateSet)
+	admin.MountAdmin(root, templateSet)
 	api.MountAuth(root)
 
 	if configuration.Debug {

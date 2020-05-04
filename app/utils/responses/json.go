@@ -6,15 +6,17 @@ import (
 )
 
 // WriteJSON todo
-func WriteJSON(w http.ResponseWriter, data interface{}) error {
+func WriteJSON(res http.ResponseWriter, status int, data interface{}) error {
 	raw, err := json.Marshal(data)
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		res.WriteHeader(http.StatusInternalServerError)
 		return err
 	}
 
-	if _, err := w.Write(raw); err != nil {
+	res.WriteHeader(status)
+
+	if _, err := res.Write(raw); err != nil {
 		return err
 	}
 

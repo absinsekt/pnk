@@ -1,9 +1,8 @@
-package core
+package crypto
 
 import (
 	"encoding/base64"
 	"fmt"
-	"hash"
 	"strconv"
 	"strings"
 
@@ -14,8 +13,8 @@ import (
 )
 
 // GetDjangoPasswordHash returns password hash string for django users
-func GetDjangoPasswordHash(password, salt string, iterations int, hash func() hash.Hash) string {
-	pass := pbkdf2.Key([]byte(password), []byte(salt), iterations, 32, hash)
+func GetDjangoPasswordHash(password, salt string, iterations int) string {
+	pass := pbkdf2.Key([]byte(password), []byte(salt), iterations, 32, sha256.New)
 	base := base64.StdEncoding.EncodeToString(pass)
 
 	return fmt.Sprintf("pbkdf2_sha256$%d$%s$%s", iterations, salt, base)
@@ -29,7 +28,7 @@ func DjangoPasswordEquals(input, eq string) bool {
 	salt := split[2]
 
 	iterations, _ := strconv.Atoi(_iterations)
-	hashed := GetDjangoPasswordHash(input, salt, iterations, sha256.New)
+	hashed := GetDjangoPasswordHash(input, salt, iterations)
 
 	return subtle.ConstantTimeCompare([]byte(hashed), []byte(eq)) == 1
 }

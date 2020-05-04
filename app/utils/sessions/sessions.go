@@ -18,9 +18,10 @@ func init() {
 		[]byte(configuration.SessionEncryptionKey))
 
 	SessionStore.Options = &sessions.Options{
+		Path:     "/",
 		HttpOnly: true,
 		MaxAge:   30 * 60,
 	}
 
-	gob.Register(user.User{})
+	gob.Register(&user.SessionData{})
 }
