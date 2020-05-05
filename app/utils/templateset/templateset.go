@@ -1,6 +1,7 @@
-package core
+package templateset
 
 import (
+	"fmt"
 	"html/template"
 	"io"
 	"os"
@@ -79,19 +80,29 @@ func (t *TemplateSet) Render(templateName string, w io.Writer, ctx interface{}) 
 		t.Reload()
 	}
 
-	if cached := t.templateCache[templateName]; cached != nil {
-		tmpl := cached.Lookup(templateName)
+	found := t.templateCache[templateName]
+	if found == nil {
+		if configuration.Debug {
+			msg := fmt.Sprintf("Template `%s` nor found", templateName)
 
-		if err := tmpl.Execute(w, ctx); err != nil {
-			log.Error(err)
+			log.Errorf(msg)
+			w.Write([]byte(msg))
 		}
 
-		log.Debugf(
-			"Template %s rendered in %.2fms",
-			templateName,
-			time.Now().Sub(timerStart).Seconds()*1000,
-		)
+		return
 	}
+
+	tmpl := found.Lookup(templateName)
+
+	if err := tmpl.Execute(w, ctx); err != nil {
+		log.Error(err)
+	}
+
+	log.Debugf(
+		"Template %s rendered in %.2fms",
+		templateName,
+		time.Now().Sub(timerStart).Seconds()*1000,
+	)
 }
 
 // Reload reloads all templates from templateDir
