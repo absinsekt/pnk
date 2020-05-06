@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/absinsekt/pnk/utils/strings"
+
 	"github.com/gorilla/securecookie"
 )
 
@@ -22,7 +24,8 @@ var (
 	SMTPPort             = getEnv("PNK_SMTP_PORT", 465).(int)
 	SMTPUser             = getEnv("PNK_SMTP_USER", "google@gmail.com").(string)
 	SMTPPassword         = getEnv("PNK_SMTP_PASSWORD", "punksnotdead").(string)
-	SessionNS            = getEnv("SESSION_NS", "punksnotdead").(string)
+	SessionNS            = getEnv("PNK_SESSION_NS", "punksnotdead").(string)
+	SessionVersion       = getEnv("PNK_SESSION_VERSION", strings.GenerateRandomString(8)).(string)
 	SessionAuthKey       = getEnv("PNK_SESSION_AUTH_KEY", string(securecookie.GenerateRandomKey(64))).(string)
 	SessionEncryptionKey = getEnv("PNK_SESSION_ENCRYPTION_KEY", string(securecookie.GenerateRandomKey(32))).(string)
 

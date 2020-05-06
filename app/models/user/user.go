@@ -9,9 +9,7 @@ import (
 
 	"github.com/go-pg/pg/v9"
 
-	"github.com/absinsekt/pnk/configuration"
 	"github.com/absinsekt/pnk/models"
-	"github.com/absinsekt/pnk/utils/core"
 	"github.com/absinsekt/pnk/utils/crypto"
 )
 
@@ -21,11 +19,11 @@ type User struct {
 	ID          int64     `pg:",pk" json:"id"`
 	Password    string    `pg:"type:varchar(128),notnull" json:"-"`
 	LastLogin   time.Time `json:"-"`
-	IsSuperuser bool      `pg:",notnull" json:"-"`
 	Username    string    `pg:"type:varchar(150),notnull,unique" json:"username"`
 	FirstName   string    `pg:"type:varchar(30),notnull" json:"-"`
 	LastName    string    `pg:"type:varchar(30),notnull" json:"-"`
 	Email       string    `pg:"type:varchar(254),notnull" json:"email"`
+	IsSuperuser bool      `pg:",notnull" json:"-"`
 	IsStaff     bool      `pg:",notnull" json:"-"`
 	IsActive    bool      `pg:",notnull" json:"-"`
 	DateJoined  time.Time `pg:",notnull" json:"-"`
@@ -33,14 +31,16 @@ type User struct {
 
 // SessionData type to store user data in session
 type SessionData struct {
-	ID       int64
-	Username string
-	Email    string
+	ID             int64
+	Username       string
+	Email          string
+	IsStaff        bool
+	SessionVersion string
 }
 
 // Auth authenticates user (checks if it exists with a given password)
 func Auth(username, password string) (*User, error) {
-	user, err := getUser(username)
+	user, err := getActiveUser(username)
 	if err != nil {
 		return nil, err
 	}
@@ -52,36 +52,25 @@ func Auth(username, password string) (*User, error) {
 	return nil, pg.ErrNoRows
 }
 
-func getUser(username string) (*User, error) {
-	method := func() (interface{}, error) {
-		user := new(User)
+func getActiveUser(username string) (*User, error) {
+	// NO CACHE (isActive, permissions)
+	user := new(User)
 
-		if err := models.DB.
-			Model(user).
-			Where("username = ?", username).
-			Select(); err != nil {
+	if err := models.DB.
+		Model(user).
+		Where("username = ?", username).
+		Where("is_active = ?", true).
+		Select(); err != nil {
 
-			return nil, err
-		}
-
-		return user, nil
-	}
-
-	result, err := core.GetCached("GetUser", configuration.SecondsFrequently, method)
-	if err != nil {
 		return nil, err
 	}
 
-	return result.(*User), nil
+	return user, nil
 }
 
 // CreateUser creates a new active user with a given password
 func CreateUser(username, password, firstName, lastName, email string, isStaff, isSuperuser bool) error {
-	salt, err := strings.GenerateRandomString(12)
-	if err != nil {
-		return err
-	}
-
+	salt := strings.GenerateRandomString(12)
 	iterations := 12000
 
 	if isStaff {

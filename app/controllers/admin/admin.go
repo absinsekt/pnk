@@ -15,7 +15,7 @@ import (
 func MountAdmin(r *mux.Router, t *templateset.TemplateSet) {
 	sub := r.Path("/admin/").Subrouter()
 
-	sub.Use(middlewares.GetAuthMiddleware(t))
+	sub.Use(middlewares.GetAuthMiddleware(t, true))
 
 	sub.
 		Path("/").

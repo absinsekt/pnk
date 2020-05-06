@@ -56,9 +56,11 @@ func handleLogin(res http.ResponseWriter, req *http.Request) {
 	}
 
 	session.Values["user"] = &user.SessionData{
-		ID:       usr.ID,
-		Username: usr.Username,
-		Email:    usr.Email,
+		ID:             usr.ID,
+		Username:       usr.Username,
+		Email:          usr.Email,
+		IsStaff:        usr.IsStaff,
+		SessionVersion: configuration.SessionVersion,
 	}
 
 	if err := session.Save(req, res); err != nil {

@@ -18,11 +18,7 @@ func TestGenerateRandomString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := GenerateRandomString(tt.args.length)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("GenerateRandomString() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := GenerateRandomString(tt.args.length)
 			if len(got) != tt.want {
 				t.Errorf("GenerateRandomString() length = %v, want %v", got, tt.want)
 			}
