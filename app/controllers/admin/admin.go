@@ -11,16 +11,13 @@ import (
 	"github.com/absinsekt/pnk/utils/templateset"
 )
 
-// MountAdmin attach all entry points of file
-func MountAdmin(r *mux.Router, t *templateset.TemplateSet) {
-	sub := r.Path("/admin/").Subrouter()
+// Mount attach all entry points of file
+func Mount(r *mux.Router, t *templateset.TemplateSet) {
+	sub := r.PathPrefix("/admin").Subrouter()
 
 	sub.Use(middlewares.GetAuthMiddleware(t, true))
 
-	sub.
-		Path("/").
-		Methods("GET").
-		HandlerFunc(getHandlerIndex(t))
+	sub.Path("/").Methods("GET").HandlerFunc(getHandlerIndex(t))
 }
 
 func getHandlerIndex(templateSet *templateset.TemplateSet) func(res http.ResponseWriter, req *http.Request) {

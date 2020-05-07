@@ -8,10 +8,8 @@ import (
 )
 
 // MountIndex attach all entry points of file
-func MountIndex(r *mux.Router, t *templateset.TemplateSet) {
-	r.Path("/").
-		Methods("GET").
-		HandlerFunc(getHandlerIndex(t))
+func Mount(r *mux.Router, t *templateset.TemplateSet) {
+	r.Path("/").Methods("GET").HandlerFunc(getHandlerIndex(t))
 }
 
 func getHandlerIndex(templateSet *templateset.TemplateSet) func(res http.ResponseWriter, req *http.Request) {

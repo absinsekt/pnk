@@ -28,9 +28,9 @@ func NewControllersRouter() *mux.Router {
 	root := mux.NewRouter().StrictSlash(true)
 
 	// mount all subpaths
-	www.MountIndex(root, templateSet)
-	admin.MountAdmin(root, templateSet)
-	api.MountAuth(root)
+	www.Mount(root, templateSet)
+	admin.Mount(root, templateSet)
+	api.Mount(root)
 
 	if configuration.Debug {
 		// proxy sockjs for hmr

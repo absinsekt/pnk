@@ -12,20 +12,12 @@ import (
 	"github.com/absinsekt/pnk/utils/responses"
 	"github.com/absinsekt/pnk/utils/sessions"
 
-	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
 
 type credentials struct {
 	Login    string
 	Password string
-}
-
-// MountAuth attach all entry points of file
-func MountAuth(r *mux.Router) {
-	r.Path("/login/").
-		Methods("POST").
-		HandlerFunc(handleLogin)
 }
 
 func handleLogin(res http.ResponseWriter, req *http.Request) {
