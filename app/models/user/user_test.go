@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func Test_createUserTable(t *testing.T) {
+func Test_createTable(t *testing.T) {
 	tests := []struct {
 		name    string
 		wantErr bool
@@ -20,7 +20,7 @@ func Test_createUserTable(t *testing.T) {
 	}
 }
 
-func Test_dropUserTable(t *testing.T) {
+func Test_dropTable(t *testing.T) {
 	tests := []struct {
 		name    string
 		wantErr bool

@@ -1,8 +1,7 @@
 package models
 
 import (
-	"context"
-	"fmt"
+	"github.com/absinsekt/pnk/utils/core"
 
 	"github.com/absinsekt/pnk/configuration"
 	"github.com/absinsekt/pnk/utils"
@@ -20,7 +19,9 @@ func init() {
 		Password: configuration.DbPassword,
 	})
 
-	DB.AddQueryHook(dbLogger{})
+	if configuration.Debug {
+		DB.AddQueryHook(core.QueryLogger{})
+	}
 }
 
 // CheckConnection checks if the data base is available
@@ -29,16 +30,4 @@ func CheckConnection() {
 
 	_, err := DB.ExecOne("SELECT 1")
 	utils.Check(err, true)
-}
-
-// TODO
-type dbLogger struct{}
-
-func (d dbLogger) BeforeQuery(c context.Context, q *pg.QueryEvent) (context.Context, error) {
-	return c, nil
-}
-
-func (d dbLogger) AfterQuery(c context.Context, q *pg.QueryEvent) error {
-	fmt.Println(q.FormattedQuery())
-	return nil
 }

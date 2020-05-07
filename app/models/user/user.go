@@ -46,6 +46,7 @@ func Auth(username, password string) (*User, error) {
 	}
 
 	if crypto.DjangoPasswordEquals(password, user.Password) {
+		updateLastLogin(user)
 		return user, nil
 	}
 
@@ -66,6 +67,11 @@ func getActiveUser(username string) (*User, error) {
 	}
 
 	return user, nil
+}
+
+func updateLastLogin(user *User) error {
+	user.LastLogin = time.Now()
+	return models.DB.Update(user)
 }
 
 // CreateUser creates a new active user with a given password
