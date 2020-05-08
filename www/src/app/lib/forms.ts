@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import { isSet } from './objects';
 
 
 function serializeForm(form: HTMLFormElement): {[key: string]: string|number|boolean} {
@@ -24,14 +25,24 @@ function handleSubmit(e) {
   e.preventDefault();
   e.stopPropagation();
 
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  const data = serializeForm(form);
+
+  const csrfToken = data['gorilla.csrf.Token'];
+  if (isSet(csrfToken)) {
+    headers['X-CSRF-Token'] = csrfToken;
+    delete data['gorilla.csrf.Token'];
+  }
+
   fetch(form.action, {
     method: form.method,
     mode: 'cors',
     cache: 'no-cache',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(serializeForm(form))
+    headers,
+    body: JSON.stringify(data)
   })
 
   .then((data) => data.json())

@@ -19,5 +19,5 @@ func ErrorResponse(res http.ResponseWriter, req *http.Request, status int, templ
 	errorTemplate := fmt.Sprintf("errors_%d.html", status)
 
 	res.WriteHeader(status)
-	templateSet.Render(errorTemplate, res, nil)
+	templateSet.Render(errorTemplate, res, req, nil)
 }

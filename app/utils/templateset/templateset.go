@@ -3,7 +3,7 @@ package templateset
 import (
 	"fmt"
 	"html/template"
-	"io"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/absinsekt/pnk/configuration"
+	"github.com/gorilla/csrf"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -73,7 +74,7 @@ func (t *TemplateSet) loadTemplates() error {
 }
 
 // Render writes rendered html to an io.Writer
-func (t *TemplateSet) Render(templateName string, w io.Writer, ctx interface{}) {
+func (t *TemplateSet) Render(templateName string, res http.ResponseWriter, req *http.Request, ctx map[string]interface{}) {
 	timerStart := time.Now()
 
 	if configuration.Debug == true {
@@ -86,7 +87,7 @@ func (t *TemplateSet) Render(templateName string, w io.Writer, ctx interface{}) 
 			msg := fmt.Sprintf("Template `%s` nor found", templateName)
 
 			log.Errorf(msg)
-			w.Write([]byte(msg))
+			res.Write([]byte(msg))
 		}
 
 		return
@@ -94,7 +95,12 @@ func (t *TemplateSet) Render(templateName string, w io.Writer, ctx interface{}) 
 
 	tmpl := found.Lookup(templateName)
 
-	if err := tmpl.Execute(w, ctx); err != nil {
+	if ctx == nil {
+		ctx = make(map[string]interface{})
+	}
+	ctx[csrf.TemplateTag] = csrf.TemplateField(req)
+
+	if err := tmpl.Execute(res, ctx); err != nil {
 		log.Error(err)
 	}
 

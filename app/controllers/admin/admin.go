@@ -15,6 +15,8 @@ import (
 func Mount(r *mux.Router, t *templateset.TemplateSet) {
 	sub := r.PathPrefix("/admin").Subrouter()
 
+	// must be first
+	sub.Use(middlewares.CSRFMiddleware)
 	sub.Use(middlewares.GetAuthMiddleware(t, true))
 
 	sub.Path("/").Methods("GET").HandlerFunc(getHandlerIndex(t))
@@ -28,6 +30,6 @@ func getHandlerIndex(templateSet *templateset.TemplateSet) func(res http.Respons
 			usr = _usr.(*user.SessionData)
 		}
 
-		templateSet.Render("admin_index.html", res, map[string]interface{}{"user": usr})
+		templateSet.Render("admin_index.html", res, req, map[string]interface{}{"user": usr})
 	}
 }

@@ -3,17 +3,28 @@ package www
 import (
 	"net/http"
 
+	"github.com/absinsekt/pnk/controllers/middlewares"
+
 	"github.com/absinsekt/pnk/utils/templateset"
 	"github.com/gorilla/mux"
 )
 
-// MountIndex attach all entry points of file
+// Mount attach all entry points of file
 func Mount(r *mux.Router, t *templateset.TemplateSet) {
-	r.Path("/").Methods("GET").HandlerFunc(getHandlerIndex(t))
+	sub := r.PathPrefix("/").Subrouter()
+
+	sub.Use(middlewares.CSRFMiddleware)
+
+	sub.Path("/").Methods("GET").HandlerFunc(getHandlerIndex(t))
+}
+
+// Use handler because of CSRF middleware
+type indexHandler struct {
+	templateSet *templateset.TemplateSet
 }
 
 func getHandlerIndex(templateSet *templateset.TemplateSet) func(res http.ResponseWriter, req *http.Request) {
 	return func(res http.ResponseWriter, req *http.Request) {
-		templateSet.Render("index.html", res, nil)
+		templateSet.Render("index.html", res, req, nil)
 	}
 }

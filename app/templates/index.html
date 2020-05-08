@@ -1,11 +1,12 @@
 {{ template "_base.html" . }}
 
 {{ define "content" }}
-<h1>Punk's not dead!</h1>
+<h1>Punk's not dead!!</h1>
 
-<form action="/login/" method="POST" data-type="managed">
+<form action="/api/login/" method="POST" data-type="managed">
   <input type="text" name="login" required />
   <input type="password" name="password" required />
+  {{ .csrfField }}
 
   <input type="submit" value="Ololo!" />
 </form>
