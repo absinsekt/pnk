@@ -39,18 +39,13 @@ export function safeSet(src, path, value) {
   while (levels.length) {
     const level = levels.shift();
 
-    if (levels.length === 0) {
-      if (typeof offset === 'undefined') {
-        offset = {};
-      }
-
-      offset[level] = value;
-    } else {
-      if (typeof offset === 'undefined') {
-        offset = {};
-      }
-
+    if (typeof offset[level] === 'undefined') {
       offset[level] = {};
+    }
+
+    if (levels.length === 0) {
+      offset[level] = value;
+      break;
     }
 
     offset = offset[level];

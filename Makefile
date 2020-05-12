@@ -16,6 +16,10 @@ tmux split-window -h 'cd app; go run pnk.go'; \
 tmux attach
 
 
+story:
+	@cd www; npm run storybook
+
+
 serve:
 	@set -a && source ./.env && set +a; \
 cd app; \

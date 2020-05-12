@@ -5,6 +5,26 @@ export const pad = (num: number, size: number): string => {
   return result;
 };
 
+export function ID(length: number): string {
+  const codes = [
+    { offset: 48, length: 10 },
+    { offset: 65, length: 26 },
+    { offset: 97, length: 26 },
+  ];
+
+  let result = '';
+
+  for (let i = 0; i < length; i++) {
+    const palette = codes[Math.floor(Math.random() * 3)];
+
+    result += String.fromCharCode(
+      palette.offset + Math.floor(Math.random() * palette.length)
+    );
+  }
+
+  return result;
+}
+
 export const humanize = (num, divider = " ") => {
   const [int, fract] = num.toString().split('.')
   const result = [];
