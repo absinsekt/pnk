@@ -1,5 +1,5 @@
 import { safeSet, isSet } from 'app/core/objects';
-import { Form, FormValue } from './types';
+import { Form, FormValue, ApiError, ApiResponse } from './types';
 
 export function updateForm(model: {[key: string]: any}, path: string, value: any) {
   model.update((f) => {
@@ -32,7 +32,7 @@ export function serializeForm(form: Form): {[key: string]: string|number|boolean
   return result;
 }
 
-export const sendForm = (form, csrfToken, data) => {
+export const sendForm = (form, csrfToken, data): Promise<ApiResponse|ApiError> => {
   const headers = {
     'Content-Type': 'application/json',
   };
@@ -50,5 +50,7 @@ export const sendForm = (form, csrfToken, data) => {
     headers,
     method: 'POST',
     mode: 'cors',
-  }).then((data) => data.json());
+  }).then((data) => data.json())
+  .then((json) => json as ApiResponse)
+  .catch((json) => json as ApiError);
 }

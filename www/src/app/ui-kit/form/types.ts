@@ -10,3 +10,18 @@ export type FormValue<T = string> = {
   isValid: boolean;
   error: string;
 }
+
+export type ApiResponse = {
+  status: 'success';
+  message: string;
+  data: {
+    items: [];
+    count: number;
+    offset: number;
+  };
+}
+
+export type ApiError = {
+  status: 'error';
+  message: string;
+}

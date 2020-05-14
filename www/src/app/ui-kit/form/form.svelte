@@ -1,28 +1,30 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { updateForm, sendForm } from './form';
   import { isUnset } from 'app/core/objects';
+
+  const dispatch = createEventDispatcher();
+
+  export let store;
+  if (isUnset(store)) throw new Error("Required param (store) is missing!");
 
   export let action = '.';
   export let data;
   export let token;
 
-  export let model;
-  if (isUnset(model)) throw new Error("Required param (model) is missing!");
-
   let thisForm;
-  const thisForm_unsubscribe = model.subscribe(m => thisForm = m);
+  const thisForm_unsubscribe = store.subscribe(m => thisForm = m);
 
   async function submit(e) {
-    updateForm(model, 'isTouched', true);
+    updateForm(store, 'isTouched', true);
 
     if (thisForm.isValid) {
       const result = await sendForm(thisForm, token, data);
-      debugger;
+      dispatch(result.status, result);
     }
   }
 
-  onMount(() => updateForm(model, 'action', action));
+  onMount(() => updateForm(store, 'action', action));
 
   onDestroy(thisForm_unsubscribe);
 </script>

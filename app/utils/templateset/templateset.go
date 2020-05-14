@@ -83,10 +83,10 @@ func (t *TemplateSet) Render(templateName string, res http.ResponseWriter, req *
 
 	found := t.templateCache[templateName]
 	if found == nil {
-		if configuration.Debug {
-			msg := fmt.Sprintf("Template `%s` nor found", templateName)
+		msg := fmt.Sprintf("Template `%s` nor found", templateName)
+		log.Debug(msg)
 
-			log.Errorf(msg)
+		if configuration.Debug {
 			res.Write([]byte(msg))
 		}
 
@@ -99,6 +99,7 @@ func (t *TemplateSet) Render(templateName string, res http.ResponseWriter, req *
 		ctx = make(map[string]interface{})
 	}
 	ctx[csrf.TemplateTag] = csrf.TemplateField(req)
+	ctx["csrfToken"] = csrf.Token(req)
 
 	if err := tmpl.Execute(res, ctx); err != nil {
 		log.Error(err)

@@ -1,11 +1,11 @@
 <script>
   import { onDestroy } from 'svelte';
 
-  export let model;
+  export let store;
   export let title = 'Submit';
 
   let thisForm;
-  const thisForm_unsubscribe = model.subscribe(v => thisForm = v);
+  const thisForm_unsubscribe = store.subscribe(v => thisForm = v);
 
   onDestroy(thisForm_unsubscribe)
 </script>

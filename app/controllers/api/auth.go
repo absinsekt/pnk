@@ -61,5 +61,5 @@ func handleLogin(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// done
-	responses.WriteJSON(res, http.StatusAccepted, usr)
+	responses.SuccessJSON(res, http.StatusAccepted, usr)
 }

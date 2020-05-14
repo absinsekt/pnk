@@ -12,7 +12,7 @@ func ErrorResponse(res http.ResponseWriter, req *http.Request, status int, templ
 	contentType := req.Header.Get("Content-Type")
 
 	if contentType == "application/json" {
-		WriteJSON(res, status, map[string]interface{}{"status": "error", "todo": "move to json error builder"})
+		writeJSON(res, status, map[string]interface{}{"status": "error", "todo": "move to json error builder"})
 		return
 	}
 

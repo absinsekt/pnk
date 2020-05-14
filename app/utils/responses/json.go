@@ -5,8 +5,19 @@ import (
 	"net/http"
 )
 
-// WriteJSON todo
-func WriteJSON(res http.ResponseWriter, status int, data interface{}) error {
+type responseData struct {
+	Items  []interface{} `json:"items"`
+	Count  int64         `json:"count"`
+	Offset int64         `json:"offset"`
+}
+
+type successResponse struct {
+	Status  string       `json:"status"`
+	Message string       `json:"message"`
+	Data    responseData `json:"data"`
+}
+
+func writeJSON(res http.ResponseWriter, status int, data interface{}) error {
 	raw, err := json.Marshal(data)
 
 	if err != nil {
@@ -21,4 +32,17 @@ func WriteJSON(res http.ResponseWriter, status int, data interface{}) error {
 	}
 
 	return nil
+}
+
+// SuccessJSON todo
+func SuccessJSON(res http.ResponseWriter, status int, data interface{}) error {
+	return writeJSON(res, status, &successResponse{
+		Status:  "success",
+		Message: "",
+		Data: responseData{
+			Items:  []interface{}{data},
+			Count:  1,
+			Offset: 0,
+		},
+	})
 }

@@ -1,13 +1,13 @@
 {{ template "_base.html" . }}
 
+{{ define "scripts" }}
+<script>
+  var _CSRF_TOKEN='{{ .csrfToken }}';
+</script>
+{{ end }}
+
 {{ define "content" }}
 <h1>Punk's not dead!!</h1>
 
-<form action="/api/login/" method="POST" data-type="managed">
-  <input type="text" name="login" required />
-  <input type="password" name="password" required />
-  {{ .csrfField }}
-
-  <input type="submit" value="Ololo!" />
-</form>
+<div id="app-login"></div>
 {{ end }}
