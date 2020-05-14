@@ -30,6 +30,12 @@ build:
 	@cd www; npm run build
 
 
+test:
+	@set -a && source ./.env && set +a; \
+cd $(path); \
+go test -run $(test) -count=1
+
+
 db-init:
 	@set -a && source ./.env && set +a; \
 cd app/models/user; \
@@ -54,6 +60,7 @@ info:
 	@echo "front"
 	@echo "serve"
 	@echo "build"
+	@echo "test\t\t\tE.g.: db-test path=app/models/order tst=TestGetOrder"
 	@echo "db-init"
 	@echo "db-create"
 	@echo "db-drop"
