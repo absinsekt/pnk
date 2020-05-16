@@ -1,11 +1,12 @@
 .DEFAULT_GOAL := info
+ENV := set -a && source ./.env && set +a;
 
 # TODO init
 # go get github.com/cespare/reflex
 
 
 dev:
-	@tmux new-session -d 'cd www && npm run dev'; \
+	@tmux new-session -d '$(ENV) cd www && npm run dev'; \
 tmux split-window -h 'make serve'; \
 tmux attach
 
@@ -17,11 +18,11 @@ tmux attach
 
 
 story:
-	@cd www; npm run storybook
+	@$(ENV) cd www; npm run storybook
 
 
 serve:
-	@set -a && source ./.env && set +a; \
+	@$(ENV) \
 cd app; \
 reflex -r '\.go$\' -s -- sh -c 'go run pnk.go'
 

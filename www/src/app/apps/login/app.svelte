@@ -1,9 +1,9 @@
 <script>
-  import Form from 'app/ui-kit/form/form.svelte';
-  import Input from 'app/ui-kit/input/input.svelte';
-  import Submit from 'app/ui-kit/submit/submit.svelte';
+  import Form from 'ui/form/form.svelte';
+  import Input from 'ui/input/input.svelte';
+  import Submit from 'ui/submit/submit.svelte';
 
-  import { buildRequiredValidator } from 'app/ui-kit/validators/validators';
+  import { buildRequiredValidator } from 'ui/validators/validators';
 
   import { LoginApp } from '.';
 </script>

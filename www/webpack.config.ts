@@ -3,6 +3,8 @@ import * as path from 'path';
 import { autoPreprocess } from 'svelte-preprocess/dist/autoProcess';
 
 import {
+  aliases,
+  printEnvVariables,
   DevLoaders,
   DevPlugins,
   ProdLoaders,
@@ -11,6 +13,8 @@ import {
 
 const config: (env, argv) => webpack.Configuration = (env, argv) => {
   const isProduction = argv.mode === 'production';
+
+  printEnvVariables();
 
   return {
     entry: {
@@ -23,11 +27,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
 
     resolve: {
       extensions: ['.mjs', '.ts', '.js', '.svelte', '.styl'],
-      alias: {
-        'app': path.resolve(__dirname, 'src/app'),
-        'styles': path.resolve(__dirname, 'src/styles'),
-        'assets': path.resolve(__dirname, 'src/assets'),
-      }
+      alias: aliases
     },
 
     output: {
@@ -52,7 +52,10 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
     module: {
       rules: [{
         test: /\.ts$/,
-        include: path.resolve(__dirname, 'src/app'),
+        include: [
+          path.resolve(__dirname, 'src/app'),
+          path.resolve(__dirname, 'src/ui-kit'),
+        ],
         use: {
           loader: 'ts-loader',
         }
@@ -65,7 +68,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
             hotReload: false, //if true - Cannot read property '_debugName' of undefined
             preprocess: [autoPreprocess({
               stylus: {
-                paths: [path.resolve(__dirname, 'src')]
+                paths: path.resolve(__dirname, 'src')
               }
             })],
           },

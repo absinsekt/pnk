@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { FormValue } from 'app/ui-kit/form/types';
+import { FormValue } from 'ui/form/types';
 
 export type OrderFormStore = {
   isTouched: boolean;

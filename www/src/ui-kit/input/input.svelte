@@ -3,8 +3,8 @@
   import { onMount, onDestroy } from 'svelte';
   import { ID } from 'app/core/numbers';
   import { isUnset } from 'app/core/objects';
-  import { updateFieldValue } from 'app/ui-kit/form/form';
-  import { buildValidate } from 'app/ui-kit/validators';
+  import { updateFieldValue } from 'ui/form/form';
+  import { buildValidate } from 'ui/validators';
 
   export let store;
   if (isUnset(store)) throw new Error("Required param (store) is missing!");

@@ -1,5 +1,5 @@
 import { isSet, isUnset } from 'app/core/objects';
-import { updateFieldError } from 'app/ui-kit/form/form';
+import { updateFieldError } from 'ui/form/form';
 
 export function buildValidate(model, name, validators) {
   return function (v) {
