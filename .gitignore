@@ -1,4 +1,5 @@
 .vscode/
+.env
 
 www/node_modules/
 www/dist/
