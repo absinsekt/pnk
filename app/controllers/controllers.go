@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
+	"github.com/valyala/fasthttp"
+
 	"github.com/absinsekt/pnk/controllers/admin"
 	"github.com/absinsekt/pnk/controllers/api"
 	"github.com/absinsekt/pnk/controllers/www"
@@ -54,4 +56,23 @@ func NewControllersRouter() *mux.Router {
 	})
 
 	return root
+}
+
+func TestHandler(ctx *fasthttp.RequestCtx) {
+	templateSet, err := templateset.NewTemplateSet(configuration.TemplatePath)
+	utils.Check(err, true)
+
+	if configuration.Debug {
+		// TODO proxy sockjs for hmr
+		// TODO "/sockjs-node"
+		// TODO serve static
+	}
+
+	switch string(ctx.Path()) {
+	case "/":
+		www.TestGetHandlerIndex(templateSet)(ctx)
+
+	default:
+		ctx.SetStatusCode(fasthttp.StatusTeapot)
+	}
 }

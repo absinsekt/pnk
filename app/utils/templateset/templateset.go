@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/valyala/fasthttp"
+
 	"github.com/absinsekt/pnk/configuration"
 	"github.com/gorilla/csrf"
 
@@ -102,6 +104,47 @@ func (t *TemplateSet) Render(templateName string, res http.ResponseWriter, req *
 	ctx["csrfToken"] = csrf.Token(req)
 
 	if err := tmpl.Execute(res, ctx); err != nil {
+		log.Error(err)
+	}
+
+	log.Debugf(
+		"Template %s rendered in %.2fms",
+		templateName,
+		time.Now().Sub(timerStart).Seconds()*1000,
+	)
+}
+
+func (t *TemplateSet) TestRender(templateName string, ctx *fasthttp.RequestCtx, data map[string]interface{}) {
+	timerStart := time.Now()
+
+	if configuration.Debug == true {
+		t.Reload()
+	}
+
+	found := t.templateCache[templateName]
+	if found == nil {
+		msg := fmt.Sprintf("Template `%s` nor found", templateName)
+		log.Debug(msg)
+
+		if configuration.Debug {
+			ctx.WriteString(msg)
+		}
+
+		return
+	}
+
+	tmpl := found.Lookup(templateName)
+
+	// if data == nil {
+	// 	data = make(map[string]interface{})
+	// }
+	// data[csrf.TemplateTag] = csrf.TemplateField(req)
+	// data["csrfToken"] = csrf.Token(req)
+
+	// TODO csrf and middlewares
+	ctx.SetContentType("text/html")
+
+	if err := tmpl.Execute(ctx.Response.BodyWriter(), data); err != nil {
 		log.Error(err)
 	}
 
