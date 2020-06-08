@@ -2,7 +2,7 @@ import * as WriteFileWebpackPlugin from 'write-file-webpack-plugin';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as CopyWebpackPlugin from 'copy-webpack-plugin';
 import { DefinePlugin } from 'webpack';
-import { getEnvVariables } from './env-variables';
+import { definedEnvVariables } from './env-variables';
 
 export const DevPlugins = [
   new WriteFileWebpackPlugin(),
@@ -16,5 +16,5 @@ export const DevPlugins = [
     filename: '../../app/templates/_base.html'
   }),
 
-  new DefinePlugin(getEnvVariables())
+  new DefinePlugin(definedEnvVariables)
 ];

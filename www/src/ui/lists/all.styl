@@ -1,0 +1,36 @@
+.pnk-drawer-wrap
+  position: relative
+  width: 100%
+  height: 0
+  z-index: 10
+
+  .pnk-list-drawer
+    border: $theme-wgt-border-size solid $theme-wgt-border
+    border-top: none
+    max-height: "calc(%s + 1px)" % unit($theme-wgt-size-step * 5, 'rem')
+    overflow-x: hidden
+    overflow-y: auto
+    background-color: $theme-wgt-background
+
+    .pnk-list-item
+      display: flex
+      flex-direction: row
+      cursor: pointer
+
+      a
+        color: $theme-wgt-text
+        font-size: 1rem
+        padding: unit($theme-wgt-size-step / 4, 'rem')
+        display: block
+        text-decoration: none
+        white-space: nowrap
+        overflow: hidden
+        text-overflow: ellipsis
+        flex-grow: 1
+
+      &:hover
+        background-color: $theme-wgt-selection
+
+        a
+          color: $theme-wgt-background
+

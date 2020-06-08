@@ -1,0 +1,14 @@
+@import 'styles/variables'
+@import 'styles/mixins'
+@import 'theme'
+
+.pnk-label
+  display: block
+  font-family: $fnt-sns
+  font-weight: 600
+  font-size: unit($theme-wgt-size-step / 2.5, 'rem')
+  margin-bottom: unit($theme-wgt-size-step / 8, 'rem')
+  text-transform: uppercase
+
+  .pnk-required
+    color: $theme-wgt-error

@@ -1,6 +1,6 @@
 <script>
   import Form from 'ui/form/form.svelte';
-  import Input from 'ui/input/input.svelte';
+  import Inline from 'ui/inputs/inline.svelte';
   import Submit from 'ui/submit/submit.svelte';
 
   import { buildRequiredValidator } from 'ui/validators/validators';
@@ -15,11 +15,11 @@
   on:success={() => LoginApp.openAdmin()}
   on:error={(err) => alert(err.message)}>
 
-  <Input label="login"
+  <Inline label="login"
     name="login" store={LoginApp.store}
     validators={[buildRequiredValidator('Enter login')]} />
 
-  <Input label="password"
+  <Inline label="password"
     name="password" store={LoginApp.store} type="password"
     validators={[buildRequiredValidator('Enter password')]} />
 

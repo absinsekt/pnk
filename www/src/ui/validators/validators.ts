@@ -1,25 +1,25 @@
-export function buildNameValidator(errorMessage: string) {
+export function validName(errorMessage: string) {
   return function(value: string): string {
-    const re = /[a-zа-я]{2,}\s[a-zа-я]{2,}/i;
+    const re = /[a-zа-я]{2,}/i;
     return value.match(re) === null ? errorMessage : null;
   }
 }
 
-export function buildEmailValidator(errorMessage: string) {
+export function validEmail(errorMessage: string) {
   return function(value: string): string {
     const re = /^[a-z0-9_.+-]+@[a-z0-9-]+\.[a-z]{2,5}$/i;
     return value.match(re) === null ? errorMessage : null;
   }
 }
 
-export function buildPhoneValidator(errorMessage: string) {
+export function validPhone(errorMessage: string) {
   return function(value: string): string {
     const re = /^[0-9]{10}$/i;
     return value.match(re) === null ? errorMessage : null;
   }
 }
 
-export function buildRequiredValidator(errorMessage: string) {
+export function required(errorMessage: string) {
   return function(value: string): string {
     return value === '' ? errorMessage : null;
   }

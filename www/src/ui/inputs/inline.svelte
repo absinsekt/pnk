@@ -1,8 +1,10 @@
+<style src="./inline/inline.styl"></style>
+
 <script>
   import { imask } from '@imask/svelte';
   import { onMount, onDestroy } from 'svelte';
   import { ID } from 'app/core/numbers';
-  import { isUnset } from 'app/core/objects';
+  import { isSet, isUnset } from 'app/core/objects';
   import { updateFieldValue } from 'ui/form/form';
   import { buildValidate } from 'ui/validators';
 
@@ -13,11 +15,12 @@
   if (isUnset(name)) throw new Error("Required param (name) is missing!");
 
   export let label = '';
+  export let placeholder = '';
   export let type = 'text';
   export let mask = '';
   export let validators;
 
-  const id = `input-${ID(8)}`;
+  const id = `inline-${ID(8)}`;
 
   let thisForm;
   const thisForm_unsubscribe = store.subscribe(v => thisForm = v);
@@ -32,13 +35,18 @@
   onDestroy(thisForm_unsubscribe);
 </script>
 
-<div>
-  <label for={id}>{label}</label>
+<div class="pnk-wgt">
+  <label class="pnk-label" for={id}>
+    {label}
+    {#if isSet(validators)}<span class="pnk-required">*</span>{/if}
+  </label>
 
+  <div class="pnk-container">
   {#if mask === ''}
-    <input
+    <input class="pnk-inline"
       {id}
       {name}
+      {placeholder}
       {type}
       value={thisField.value}
       class:error={!thisField.isValid}
@@ -47,10 +55,11 @@
       on:input
     />
   {:else}
-    <input
+    <input class="pnk-inline"
       {id}
       {name}
-      type="text"
+      {placeholder}
+      type=text
       value={thisField.value}
       class:error={!thisField.isValid}
       use:imask={{mask: mask, lazy: true}}
@@ -58,8 +67,9 @@
       on:accept={({detail}) => validate(detail.unmaskedValue)}
     >
   {/if}
+  </div>
 
-  <div>
+  <div class="pnk-error">
   {#if thisForm.isTouched && !thisField.isValid}
     {thisField.error}
   {/if}

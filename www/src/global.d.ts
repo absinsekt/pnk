@@ -1,3 +1,3 @@
 declare module '*.svelte';
 
-declare const PNK_DADATA_TOKEN: string;
+declare const PNK_DEV_DADATA_TOKEN: string;

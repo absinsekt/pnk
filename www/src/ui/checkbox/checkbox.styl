@@ -1,0 +1,38 @@
+@import 'ui/styles/widget'
+@import 'ui/styles/container'
+@import 'ui/styles/label'
+@import 'ui/styles/error'
+@import 'ui/styles/theme'
+
+.pnk-checkbox
+  cursor: pointer
+  font-size: unit($theme-wgt-size-step / 2, 'rem')
+  width: unit($theme-wgt-size-step, 'rem')
+  height: unit($theme-wgt-size-step, 'rem')
+  border: $theme-wgt-border-size solid $theme-wgt-border
+  color: $theme-wgt-text
+  background-color: $theme-wgt-background
+  margin-right: unit($theme-wgt-size-step / 4, 'rem')
+
+  display: flex
+  align-items: center
+  justify-content: center
+  flex-shrink: 0
+
+  input
+    display: none
+
+.pnk-container
+  border: none
+
+.pnk-disclaimer
+  display: flex
+  flex-direction: column
+  justify-content: center
+
+  .pnk-label
+    cursor: pointer
+    margin-bottom: 0
+
+  .pnk-slot
+    font-family: $fnt-sns

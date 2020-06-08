@@ -8,7 +8,9 @@ export type OrderFormStore = {
     name: FormValue<string>,
     email: FormValue<string>,
     phone: FormValue<string>,
-    agree: FormValue<boolean>
+    address: FormValue<string>,
+    agree: FormValue<boolean>,
+    paymentMethod: FormValue<number>,
   };
 }
 
@@ -19,6 +21,8 @@ export const form = writable<OrderFormStore>({
     name: { value: '', isValid: true, error: null },
     email: { value: '', isValid: true, error: null },
     phone: { value: '', isValid: true, error: null },
+    address: {value: '', isValid: true, error: null },
+    paymentMethod: {value: null, isValid: true, error: null },
     agree: { value: false, isValid: true, error: null },
   }
 });

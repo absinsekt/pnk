@@ -1,3 +1,5 @@
+<style src="./form.styl"></style>
+
 <script>
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { updateForm, sendForm } from './form';
@@ -29,6 +31,10 @@
   onDestroy(thisForm_unsubscribe);
 </script>
 
-<form on:submit|preventDefault|stopPropagation={submit}>
-  <slot />
-</form>
+<div class="pnk-wgt">
+  <form class="pnk-form"
+    on:submit|preventDefault|stopPropagation={submit}>
+
+    <slot />
+  </form>
+</div>

@@ -5,10 +5,6 @@ import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
 export const ProdLoaders = {
   cssLoaders: [
     MiniCssExtractPlugin.loader,
-    {
-      loader: 'postcss-loader',
-      options: { plugins: [ autoprefixer(), cssnano() ] }
-    },
     'css-loader',
   ],
 

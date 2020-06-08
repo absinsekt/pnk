@@ -13,7 +13,6 @@ export type FormValue<T = string> = {
 
 export type ApiResponse = {
   status: 'success';
-  message: string;
   data: {
     items: [];
     count: number;

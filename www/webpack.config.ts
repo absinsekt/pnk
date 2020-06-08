@@ -4,12 +4,12 @@ import { autoPreprocess } from 'svelte-preprocess/dist/autoProcess';
 
 import {
   aliases,
-  printEnvVariables,
   DevLoaders,
   DevPlugins,
   ProdLoaders,
   ProdPlugins,
-} from './wp';
+  printEnvVariables,
+} from './build-tools';
 
 const config: (env, argv) => webpack.Configuration = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -27,6 +27,10 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
 
     resolve: {
       extensions: ['.mjs', '.ts', '.js', '.svelte', '.styl'],
+      modules: [
+        'node_modules',
+        './src/app',
+      ],
       alias: aliases
     },
 
@@ -54,7 +58,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
         test: /\.ts$/,
         include: [
           path.resolve(__dirname, 'src/app'),
-          path.resolve(__dirname, 'src/ui-kit'),
+          path.resolve(__dirname, 'src/ui'),
         ],
         use: {
           loader: 'ts-loader',
@@ -68,7 +72,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
             hotReload: false, //if true - Cannot read property '_debugName' of undefined
             preprocess: [autoPreprocess({
               stylus: {
-                paths: path.resolve(__dirname, 'src')
+                paths: [path.resolve(__dirname, 'src')]
               }
             })],
           },

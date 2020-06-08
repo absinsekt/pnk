@@ -1,0 +1,62 @@
+@import 'ui/styles/widget'
+@import 'ui/styles/label'
+@import 'ui/styles/container'
+@import 'ui/styles/error'
+
+@import 'ui/lists/all'
+
+pl-holder()
+  font-weight: 400
+  font-style: italic
+  color: lighten($theme-wgt-text, 30)
+
+.pnk-input
+  cursor: pointer
+  width: "calc(100% - %s)" % unit($theme-wgt-size-step, 'rem')
+  height: unit($theme-wgt-size-step, 'rem')
+  padding: unit($theme-wgt-size-step / 4, 'rem')
+  font-size: unit($theme-wgt-size-step / 2, 'rem')
+  font-family: $fnt-sns
+  font-weight: 600
+
+  &::placeholder
+    pl-holder()
+
+  &::-ms-input-placeholder
+    pl-holder()
+
+  &::-webkit-input-placeholder
+    pl-holder()
+
+  &::-moz-placeholder
+    pl-holder()
+
+  &:-ms-input-placeholder
+    pl-holder()
+
+  &:-moz-placeholder
+    pl-holder()
+
+.pnk-dd-button
+  cursor: pointer
+  width: unit($theme-wgt-size-step, 'rem')
+  height: unit($theme-wgt-size-step, 'rem')
+  font-size: unit($theme-wgt-size-step / 2, 'rem')
+
+.pnk-dd-selected
+  display: flex
+  width: unit($theme-wgt-size-step, 'rem')
+  height: unit($theme-wgt-size-step, 'rem')
+  align-items: center
+  justify-content: center
+
+.pnk-list-item
+  color: $theme-wgt-text
+  font-family: $fnt-sns
+
+  .pnk-li-current
+    font-weight: 600
+
+  &:hover
+    .pnk-dd-selected
+      color: $theme-wgt-background

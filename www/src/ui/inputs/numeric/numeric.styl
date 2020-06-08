@@ -1,0 +1,64 @@
+@import 'styles/variables'
+@import 'styles/mixins'
+
+
+$brdr = 2px solid $clr2
+$size = 2.5rem
+
+.numeric
+  display: inline-flex
+  font-size: 0
+  border-right: $brdr
+  width: auto
+
+  *
+    nomp()
+    font-family: $fnt-sns
+    font-size: unit($size / 2, 'rem')
+    font-weight: 400
+    flex-shrink: 0
+    color: $clr3-d
+    cursor: pointer
+    background-color: #ffffff00
+    transition: $tran-x1 color, $tran-x1 background-color
+
+  &-wrapper
+    max-width: 3 * $size
+    height: $size
+    overflow: hidden
+    display: inline-flex
+    opacity: 1
+    transition: $tran-x05 max-width, $tran-x05 opacity
+
+    &.off
+      max-width: 0
+      opacity: 0
+
+  button
+    width: $size
+    height: $size
+    border: $brdr
+    border-right: none
+
+    i
+      font-size: $size - 1
+
+    &:hover
+      background-color: $clr2
+
+      i
+        color: $clr0-ll
+
+  input
+    width: 1.5 * $size
+    height: $size
+
+    border: $brdr
+    border-right: none
+
+    margin: 0
+    padding: 0 .5rem
+    text-align: center
+
+    color: $clr0-ll
+    background-color: $clr2

@@ -1,0 +1,35 @@
+@import 'ui/styles/widget'
+@import 'ui/styles/label'
+@import 'ui/styles/container'
+@import 'ui/styles/error'
+
+pl-holder()
+  font-weight: 400 !important
+  font-style: italic !important
+  color: lighten($theme-wgt-text, 30) !important
+
+.pnk-inline
+  width: 100%
+  height: unit($theme-wgt-size-step, 'rem')
+  padding: unit($theme-wgt-size-step / 4, 'rem')
+  font-size: unit($theme-wgt-size-step / 2, 'rem')
+  font-family: $fnt-sns
+  font-weight: 600
+
+  &::placeholder
+    pl-holder()
+
+  &::-ms-input-placeholder
+    pl-holder()
+
+  &::-webkit-input-placeholder
+    pl-holder()
+
+  &::-moz-placeholder
+    pl-holder()
+
+  &:-ms-input-placeholder
+    pl-holder()
+
+  &:-moz-placeholder
+    pl-holder()
