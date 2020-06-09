@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
@@ -13,25 +14,22 @@ import (
 
 func main() {
 	initLogger()
+
 	log.Info("Pnk is starting")
 
 	models.CheckConnection()
 
 	addr := fmt.Sprintf("%s:%d", configuration.HostAddress, configuration.Port)
-	// srv := &http.Server{
-	// 	Addr:         addr,
-	// 	Handler:      controllers.NewControllersRouter(),
-	// 	WriteTimeout: 15 * time.Second,
-	// 	ReadTimeout:  15 * time.Second,
-	// }
 
 	srv := &fasthttp.Server{
-		Handler: controllers.TestHandler,
+		Name:              "pnk",
+		Handler:           controllers.NewRouter(),
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		ReduceMemoryUsage: true,
 	}
 
 	log.Infof("Listening on http://%s/", addr)
-	// log.Fatalln(srv.ListenAndServe())
-
 	log.Fatalln(srv.ListenAndServe(addr))
 }
 
