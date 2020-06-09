@@ -32,6 +32,7 @@
 
   const validate = buildValidate(store, name, validators);
 
+  let isSelected = false;
   let form = null;
 
   if (isSet(store) && isSet(name)) {
@@ -44,7 +45,12 @@
   let isItemsVisible = false;
 
   function debounce(e) {
+    if (value.length === 0) {
+      isSelected = false;
+    }
+
     if (value.length < minlength) return;
+    if (isSelected) return;
 
     clearTimeout(timerId);
     timerId = setTimeout(async() => {
@@ -63,6 +69,7 @@
 
   function onSelect(itm) {
     value = itm.label;
+    isSelected = true;
 
     if (isSet(store) && isSet(name)) {
       updateFieldValue(store, name, value)
