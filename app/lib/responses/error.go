@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/absinsekt/pnk/utils/templateset"
+	"github.com/absinsekt/pnk/lib/templateset"
 )
 
 // ErrorResponse writes to ResponseWriter error with a corresponding template or serialized payload

@@ -5,7 +5,7 @@ import (
 
 	cfg "github.com/absinsekt/pnk/configuration"
 	mw "github.com/absinsekt/pnk/controllers/middlewares"
-	ts "github.com/absinsekt/pnk/utils/templateset"
+	ts "github.com/absinsekt/pnk/lib/templateset"
 )
 
 // Mount all subroutes

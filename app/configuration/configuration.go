@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/absinsekt/pnk/utils/strings"
+	"github.com/absinsekt/pnk/lib/strings"
 
 	"github.com/gorilla/securecookie"
 )

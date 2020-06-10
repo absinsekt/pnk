@@ -7,8 +7,8 @@ import (
 
 	cfg "github.com/absinsekt/pnk/configuration"
 	"github.com/absinsekt/pnk/controllers/www"
-	"github.com/absinsekt/pnk/utils"
-	ts "github.com/absinsekt/pnk/utils/templateset"
+	"github.com/absinsekt/pnk/lib"
+	ts "github.com/absinsekt/pnk/lib/templateset"
 )
 
 // NewRouter creates root loader and mounts subrouters

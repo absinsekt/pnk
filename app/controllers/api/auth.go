@@ -8,9 +8,9 @@ import (
 
 	"github.com/go-pg/pg/v9"
 
+	"github.com/absinsekt/pnk/lib/responses"
+	"github.com/absinsekt/pnk/lib/sessions"
 	"github.com/absinsekt/pnk/models/user"
-	"github.com/absinsekt/pnk/utils/responses"
-	"github.com/absinsekt/pnk/utils/sessions"
 
 	log "github.com/sirupsen/logrus"
 )

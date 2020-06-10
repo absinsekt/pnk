@@ -1,16 +1,15 @@
 package middlewares
 
 import (
-	"net/http"
-
-	"github.com/absinsekt/pnk/configuration"
-
-	"github.com/gorilla/csrf"
+	"github.com/valyala/fasthttp"
 )
 
-var csrfMiddleware = csrf.Protect([]byte(configuration.SessionEncryptionKey), csrf.Path("/"), csrf.Secure(false))
-
-// CSRFMiddleware func
-func CSRFMiddleware(next http.Handler) http.Handler {
-	return csrfMiddleware(next)
+// Protect middleware to enable whitelisted methods only
+func Protect(next fasthttp.RequestHandler) fasthttp.RequestHandler {
+	return func(ctx *fasthttp.RequestCtx) {
+		cookie := &fasthttp.Cookie{}
+		cookie.SetKey("csrf")
+		cookie.
+			ctx.Response.Header.SetCookie(cookie)
+	}
 }

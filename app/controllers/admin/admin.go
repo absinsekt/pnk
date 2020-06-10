@@ -8,7 +8,7 @@ import (
 
 	"github.com/absinsekt/pnk/controllers/middlewares"
 	"github.com/absinsekt/pnk/models/user"
-	"github.com/absinsekt/pnk/utils/templateset"
+	"github.com/absinsekt/pnk/lib/templateset"
 )
 
 // Mount attach all entry points of file
