@@ -1,25 +1,28 @@
 package www
 
 import (
-	"net/http"
+	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/controllers/middlewares"
-
-	"github.com/absinsekt/pnk/utils/templateset"
-	"github.com/gorilla/mux"
+	cfg "github.com/absinsekt/pnk/configuration"
+	mw "github.com/absinsekt/pnk/controllers/middlewares"
+	"github.com/absinsekt/pnk/controllers/middlewares/csrf"
+	"github.com/absinsekt/pnk/lib/responses"
+	ts "github.com/absinsekt/pnk/lib/templateset"
 )
 
-// Mount attach all entry points of file
-func Mount(r *mux.Router, t *templateset.TemplateSet) {
-	sub := r.PathPrefix("/").Subrouter()
+// Mount all subroutes
+func Mount(path string) fasthttp.RequestHandler {
+	if path == cfg.PathRoot {
+		return mw.Get(csrf.InjectToken(indexHandler))
+	}
 
-	sub.Use(middlewares.CSRFMiddleware)
-
-	sub.Path("/").Methods("GET").HandlerFunc(getHandlerIndex(t))
+	return responses.DummyResponseHandler
 }
 
-func getHandlerIndex(templateSet *templateset.TemplateSet) func(res http.ResponseWriter, req *http.Request) {
-	return func(res http.ResponseWriter, req *http.Request) {
-		templateSet.Render("index.html", res, req, nil)
-	}
+func indexHandler(ctx *fasthttp.RequestCtx) {
+	templateSet := ctx.UserValue(ts.TemplateSetNS).(*ts.TemplateSet)
+
+	templateSet.Render(ctx, "index.html", map[string]interface{}{
+		csrf.TokenField: ctx.UserValue(csrf.TokenCookieName),
+	})
 }

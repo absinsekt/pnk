@@ -3,14 +3,12 @@ package user
 import (
 	"time"
 
-	"github.com/absinsekt/pnk/utils/strings"
-
+	"github.com/go-pg/pg/v9"
 	"github.com/go-pg/pg/v9/orm"
 
-	"github.com/go-pg/pg/v9"
-
+	"github.com/absinsekt/pnk/lib/crypto"
+	"github.com/absinsekt/pnk/lib/strings"
 	"github.com/absinsekt/pnk/models"
-	"github.com/absinsekt/pnk/utils/crypto"
 )
 
 // User type

@@ -1,35 +1,24 @@
 package admin
 
 import (
-	"net/http"
+	"github.com/valyala/fasthttp"
 
-	"github.com/gorilla/context"
-	"github.com/gorilla/mux"
-
-	"github.com/absinsekt/pnk/controllers/middlewares"
-	"github.com/absinsekt/pnk/models/user"
-	"github.com/absinsekt/pnk/utils/templateset"
+	cfg "github.com/absinsekt/pnk/configuration"
+	mw "github.com/absinsekt/pnk/controllers/middlewares"
+	"github.com/absinsekt/pnk/controllers/middlewares/csrf"
+	"github.com/absinsekt/pnk/lib/responses"
 )
 
-// Mount attach all entry points of file
-func Mount(r *mux.Router, t *templateset.TemplateSet) {
-	sub := r.PathPrefix("/admin").Subrouter()
+// Mount all subroutes
+func Mount(path string) fasthttp.RequestHandler {
+	mwAuth := mw.BuildAuth(true)
 
-	// must be first
-	sub.Use(middlewares.CSRFMiddleware)
-	sub.Use(middlewares.GetAuthMiddleware(t, true))
+	if path == cfg.PathRoot {
+		return mw.Get(mwAuth(indexHandler))
 
-	sub.Path("/").Methods("GET").HandlerFunc(getHandlerIndex(t))
-}
-
-func getHandlerIndex(templateSet *templateset.TemplateSet) func(res http.ResponseWriter, req *http.Request) {
-	return func(res http.ResponseWriter, req *http.Request) {
-		var usr *user.SessionData
-
-		if _usr := context.Get(req, "user"); _usr != nil {
-			usr = _usr.(*user.SessionData)
-		}
-
-		templateSet.Render("admin_index.html", res, req, map[string]interface{}{"user": usr})
+	} else if path == cfg.PathAdminAuth {
+		return mw.Post(csrf.Protect(authHandler))
 	}
+
+	return responses.DummyResponseHandler
 }

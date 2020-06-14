@@ -3,13 +3,13 @@
   import Inline from 'ui/inputs/inline.svelte';
   import Submit from 'ui/submit/submit.svelte';
 
-  import { buildRequiredValidator } from 'ui/validators/validators';
+  import { required } from 'ui/validators/validators';
 
   import { LoginApp } from '.';
 </script>
 
 <Form
-  action="/api/login/"
+  action="/squat/auth/"
   store={LoginApp.store}
   token={window._CSRF_TOKEN}
   on:success={() => LoginApp.openAdmin()}
@@ -17,11 +17,11 @@
 
   <Inline label="login"
     name="login" store={LoginApp.store}
-    validators={[buildRequiredValidator('Enter login')]} />
+    validators={[required('Enter login')]} />
 
   <Inline label="password"
     name="password" store={LoginApp.store} type="password"
-    validators={[buildRequiredValidator('Enter password')]} />
+    validators={[required('Enter password')]} />
 
   <Submit store={LoginApp.store} />
 </Form>

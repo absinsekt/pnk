@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/valyala/fasthttp"
 
 	"github.com/absinsekt/pnk/configuration"
 	"github.com/absinsekt/pnk/controllers"
@@ -14,20 +14,23 @@ import (
 
 func main() {
 	initLogger()
+
 	log.Info("Pnk is starting")
 
 	models.CheckConnection()
 
 	addr := fmt.Sprintf("%s:%d", configuration.HostAddress, configuration.Port)
-	srv := &http.Server{
-		Addr:         addr,
-		Handler:      controllers.NewControllersRouter(),
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+
+	srv := &fasthttp.Server{
+		Name:              "pnk",
+		Handler:           controllers.NewRouter(),
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		ReduceMemoryUsage: true,
 	}
 
 	log.Infof("Listening on http://%s/", addr)
-	log.Fatalln(srv.ListenAndServe())
+	log.Fatalln(srv.ListenAndServe(addr))
 }
 
 func initLogger() {

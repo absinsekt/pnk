@@ -29,6 +29,6 @@ export class LoginApp {
   }
 
   public static openAdmin() {
-    window.location.href = "/admin/";
+    window.location.href = "/squat/";
   }
 }

@@ -3,17 +3,20 @@ package templateset
 import (
 	"fmt"
 	"html/template"
-	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/absinsekt/pnk/configuration"
-	"github.com/gorilla/csrf"
-
 	log "github.com/sirupsen/logrus"
+	"github.com/valyala/fasthttp"
+
+	"github.com/absinsekt/pnk/configuration"
+)
+
+const (
+	TemplateSetNS = "templateSet"
 )
 
 // TemplateSet proccessed templates container
@@ -73,8 +76,7 @@ func (t *TemplateSet) loadTemplates() error {
 	return nil
 }
 
-// Render writes rendered html to an io.Writer
-func (t *TemplateSet) Render(templateName string, res http.ResponseWriter, req *http.Request, ctx map[string]interface{}) {
+func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data map[string]interface{}) {
 	timerStart := time.Now()
 
 	if configuration.Debug == true {
@@ -87,7 +89,7 @@ func (t *TemplateSet) Render(templateName string, res http.ResponseWriter, req *
 		log.Debug(msg)
 
 		if configuration.Debug {
-			res.Write([]byte(msg))
+			ctx.WriteString(msg)
 		}
 
 		return
@@ -95,13 +97,9 @@ func (t *TemplateSet) Render(templateName string, res http.ResponseWriter, req *
 
 	tmpl := found.Lookup(templateName)
 
-	if ctx == nil {
-		ctx = make(map[string]interface{})
-	}
-	ctx[csrf.TemplateTag] = csrf.TemplateField(req)
-	ctx["csrfToken"] = csrf.Token(req)
+	ctx.SetContentType("text/html")
 
-	if err := tmpl.Execute(res, ctx); err != nil {
+	if err := tmpl.Execute(ctx.Response.BodyWriter(), data); err != nil {
 		log.Error(err)
 	}
 
