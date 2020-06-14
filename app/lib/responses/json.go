@@ -2,7 +2,8 @@ package responses
 
 import (
 	"encoding/json"
-	"net/http"
+
+	"github.com/valyala/fasthttp"
 )
 
 type responseData struct {
@@ -17,26 +18,30 @@ type successResponse struct {
 	Data    responseData `json:"data"`
 }
 
-func writeJSON(res http.ResponseWriter, status int, data interface{}) error {
+type errorResponse struct {
+	Status string `json:"status"`
+}
+
+func writeJSON(ctx *fasthttp.RequestCtx, status int, data interface{}) error {
 	raw, err := json.Marshal(data)
 
 	if err != nil {
-		res.WriteHeader(http.StatusInternalServerError)
+		ctx.Response.SetStatusCode(fasthttp.StatusInternalServerError)
 		return err
 	}
 
-	res.WriteHeader(status)
+	ctx.Response.SetStatusCode(status)
 
-	if _, err := res.Write(raw); err != nil {
+	if _, err := ctx.Response.BodyWriter().Write(raw); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// SuccessJSON todo
-func SuccessJSON(res http.ResponseWriter, status int, data interface{}) error {
-	return writeJSON(res, status, &successResponse{
+// SuccessJSON todo descr
+func SuccessJSON(ctx *fasthttp.RequestCtx, status int, data interface{}) error {
+	return writeJSON(ctx, status, &successResponse{
 		Status:  "success",
 		Message: "",
 		Data: responseData{
@@ -44,5 +49,12 @@ func SuccessJSON(res http.ResponseWriter, status int, data interface{}) error {
 			Count:  1,
 			Offset: 0,
 		},
+	})
+}
+
+// ErrorJSON todo descr
+func ErrorJSON(ctx *fasthttp.RequestCtx, status int) error {
+	return writeJSON(ctx, status, &errorResponse{
+		Status: "error",
 	})
 }

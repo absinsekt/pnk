@@ -15,3 +15,19 @@ func StrictMethods(methods []string, next fasthttp.RequestHandler) fasthttp.Requ
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 	}
 }
+
+func Get(next fasthttp.RequestHandler) fasthttp.RequestHandler {
+	return StrictMethods([]string{fasthttp.MethodGet}, next)
+}
+
+func Post(next fasthttp.RequestHandler) fasthttp.RequestHandler {
+	return StrictMethods([]string{fasthttp.MethodPost}, next)
+}
+
+func Put(next fasthttp.RequestHandler) fasthttp.RequestHandler {
+	return StrictMethods([]string{fasthttp.MethodPut}, next)
+}
+
+func Delete(next fasthttp.RequestHandler) fasthttp.RequestHandler {
+	return StrictMethods([]string{fasthttp.MethodDelete}, next)
+}

@@ -3,3 +3,5 @@
 
 www/node_modules/
 www/dist/
+
+*.code-workspace

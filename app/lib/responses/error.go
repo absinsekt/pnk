@@ -2,22 +2,23 @@ package responses
 
 import (
 	"fmt"
-	"net/http"
 
-	"github.com/absinsekt/pnk/lib/templateset"
+	ts "github.com/absinsekt/pnk/lib/templateset"
+	"github.com/valyala/fasthttp"
 )
 
 // ErrorResponse writes to ResponseWriter error with a corresponding template or serialized payload
-func ErrorResponse(res http.ResponseWriter, req *http.Request, status int, templateSet *templateset.TemplateSet) {
-	contentType := req.Header.Get("Content-Type")
+func ErrorResponse(ctx *fasthttp.RequestCtx, status int) {
+	contentType := ctx.Request.Header.ContentType()
+	templateSet := ctx.UserValue("templateSet").(*ts.TemplateSet)
 
-	if contentType == "application/json" {
-		writeJSON(res, status, map[string]interface{}{"status": "error", "todo": "move to json error builder"})
+	if string(contentType) == "application/json" {
+		ErrorJSON(ctx, status)
 		return
 	}
 
 	errorTemplate := fmt.Sprintf("errors_%d.html", status)
 
-	res.WriteHeader(status)
-	templateSet.Render(errorTemplate, res, req, nil)
+	ctx.Response.SetStatusCode(status)
+	templateSet.Render(ctx, errorTemplate, nil)
 }

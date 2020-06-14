@@ -1,15 +1,26 @@
 package api
 
-import (
-	"github.com/absinsekt/pnk/controllers/middlewares"
-	"github.com/gorilla/mux"
-)
+// import (
+// 	"github.com/valyala/fasthttp"
 
-// Mount attach all entry points of file
-func Mount(r *mux.Router) {
-	sub := r.PathPrefix("/api").Subrouter()
+// 	cfg "github.com/absinsekt/pnk/configuration"
+// 	mw "github.com/absinsekt/pnk/controllers/middlewares"
+// 	"github.com/absinsekt/pnk/lib/core"
+// )
 
-	sub.Use(middlewares.CSRFMiddleware)
+// // Mount all subroutes
+// func Mount() core.Subrouter {
+// 	return func(path string) fasthttp.RequestHandler {
+// 		switch path {
+// 		case cfg.PathAPIAuth:
+// 			return mw.StrictMethods([]string{fasthttp.MethodPost}, buildAuthHandler())
+// 		}
 
-	sub.Path("/login/").Methods("POST").HandlerFunc(handleLogin)
-}
+// 		return nil
+// 	}
+// 	// sub := r.PathPrefix("/api").Subrouter()
+
+// 	// sub.Use(middlewares.CSRFMiddleware)
+
+// 	// sub.Path("/login/").Methods("POST").HandlerFunc(handleLogin)
+// }

@@ -6,15 +6,17 @@ import (
 	"github.com/valyala/fasthttp"
 
 	cfg "github.com/absinsekt/pnk/configuration"
+	"github.com/absinsekt/pnk/controllers/admin"
 	"github.com/absinsekt/pnk/controllers/www"
 	"github.com/absinsekt/pnk/lib"
+	"github.com/absinsekt/pnk/lib/responses"
 	ts "github.com/absinsekt/pnk/lib/templateset"
 )
 
 // NewRouter creates root loader and mounts subrouters
 func NewRouter() func(*fasthttp.RequestCtx) {
 	templateSet, err := ts.NewTemplateSet(cfg.TemplatePath)
-	utils.Check(err, true)
+	lib.Check(err, true)
 
 	if cfg.Debug {
 		return buildDevRootHandler(templateSet)
@@ -24,19 +26,20 @@ func NewRouter() func(*fasthttp.RequestCtx) {
 }
 
 func buildProductionRootHandler(templateSet *ts.TemplateSet) fasthttp.RequestHandler {
-	// create groups here
-	groupWWW := www.Mount(templateSet)
-
 	return func(ctx *fasthttp.RequestCtx) {
 		path := string(ctx.Path())
+		ctx.SetUserValue(ts.TemplateSetNS, templateSet)
 
-		switch path {
-		case cfg.PathRoot:
-			groupWWW(path)(ctx)
-			// groupAPI(strings.TrimPrefix(path, cfgPathAPI))
+		if path == cfg.PathRoot {
+			www.Mount(path)(ctx)
+			return
 
-		default:
-			ctx.SetStatusCode(fasthttp.StatusTeapot)
+		} else if strings.HasPrefix(path, cfg.PathAdmin) {
+			admin.Mount(strings.TrimPrefix(path, cfg.PathAdmin))(ctx)
+			return
+
+		} else {
+			responses.DummyResponseHandler(ctx)
 		}
 	}
 }

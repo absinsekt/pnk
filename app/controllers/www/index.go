@@ -5,23 +5,24 @@ import (
 
 	cfg "github.com/absinsekt/pnk/configuration"
 	mw "github.com/absinsekt/pnk/controllers/middlewares"
+	"github.com/absinsekt/pnk/controllers/middlewares/csrf"
+	"github.com/absinsekt/pnk/lib/responses"
 	ts "github.com/absinsekt/pnk/lib/templateset"
 )
 
 // Mount all subroutes
-func Mount(t *ts.TemplateSet) func(string) fasthttp.RequestHandler {
-	return func(path string) fasthttp.RequestHandler {
-		switch path {
-		case cfg.PathRoot:
-			return mw.StrictMethods([]string{fasthttp.MethodGet}, buildIndexHandler(t))
-		}
-
-		return nil
+func Mount(path string) fasthttp.RequestHandler {
+	if path == cfg.PathRoot {
+		return mw.Get(csrf.InjectToken(indexHandler))
 	}
+
+	return responses.DummyResponseHandler
 }
 
-func buildIndexHandler(templateSet *ts.TemplateSet) fasthttp.RequestHandler {
-	return func(ctx *fasthttp.RequestCtx) {
-		templateSet.TestRender("index.html", ctx, nil)
-	}
+func indexHandler(ctx *fasthttp.RequestCtx) {
+	templateSet := ctx.UserValue(ts.TemplateSetNS).(*ts.TemplateSet)
+
+	templateSet.Render(ctx, "index.html", map[string]interface{}{
+		csrf.TokenField: ctx.UserValue(csrf.TokenCookieName),
+	})
 }
