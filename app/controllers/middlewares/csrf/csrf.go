@@ -3,7 +3,6 @@ package csrf
 import (
 	"crypto/subtle"
 	"encoding/base64"
-	"log"
 	"net/url"
 	"time"
 
@@ -45,7 +44,7 @@ func Protect(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 
 			err := cfg.SecureVault.Decode(TokenCookieName, string(cookie), &decoded)
 			if err != nil || len(decoded.Token) != TokenLength {
-				ctx.SetStatusCode(fasthttp.StatusForbidden)
+				deny(ctx)
 				return
 			}
 
@@ -57,18 +56,18 @@ func Protect(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 				// otherwise fails to parse.
 				referer, err := url.Parse(string(ctx.Request.Header.Referer()))
 				if err != nil || referer.String() == "" {
-					ctx.SetStatusCode(fasthttp.StatusForbidden)
+					deny(ctx)
 					return
 				}
 
 				requestURL, err := url.Parse(string(ctx.RequestURI()))
 				if err != nil || requestURL.String() == "" {
-					ctx.SetStatusCode(fasthttp.StatusForbidden)
+					deny(ctx)
 					return
 				}
 
 				if !sameOrigin(requestURL, referer) {
-					ctx.SetStatusCode(fasthttp.StatusForbidden)
+					deny(ctx)
 					return
 				}
 			}
@@ -76,27 +75,33 @@ func Protect(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 			// If the token returned from the session store is nil for non-idempotent
 			// ("unsafe") methods, call the error handler.
 			if decoded.Token == nil {
-				ctx.SetStatusCode(fasthttp.StatusForbidden)
+				deny(ctx)
 				return
 			}
 
 			xscrfToken := string(ctx.Request.Header.Peek("X-CSRF-Token"))
 			issued, err := base64.StdEncoding.DecodeString(xscrfToken)
 			if err != nil {
-				ctx.SetStatusCode(fasthttp.StatusForbidden)
+				deny(ctx)
 				return
 			}
 
 			requestToken := unmask(issued)
-			log.Println(issued, decoded.Token)
+
 			if !compareTokens(requestToken, decoded.Token) {
-				ctx.SetStatusCode(fasthttp.StatusForbidden)
+				deny(ctx)
 				return
 			}
 		}
 
+		ctx.Response.Header.Add("Vary", "Cookie")
 		next(ctx)
 	}
+}
+
+func deny(ctx *fasthttp.RequestCtx) {
+	responses.ClearCookie(ctx, TokenCookieName)
+	ctx.SetStatusCode(fasthttp.StatusForbidden)
 }
 
 // InjectToken generates new token for template and sets its masked version to cookie
@@ -111,7 +116,7 @@ func InjectToken(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 		})
 
 		if err == nil {
-			responses.SetCookie(ctx, TokenCookieName, value, "/", cfg.SecondsRarely)
+			responses.SetRootCookie(ctx, TokenCookieName, value, cfg.SecondsRarely)
 		}
 
 		ctx.SetUserValue(TokenCookieName, mask(token))

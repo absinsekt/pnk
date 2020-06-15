@@ -10,7 +10,7 @@ import (
 // ErrorResponse writes to ResponseWriter error with a corresponding template or serialized payload
 func ErrorResponse(ctx *fasthttp.RequestCtx, status int) {
 	contentType := ctx.Request.Header.ContentType()
-	templateSet := ctx.UserValue("templateSet").(*ts.TemplateSet)
+	templateSet := ctx.UserValue(ts.TemplateSetNS).(*ts.TemplateSet)
 
 	if string(contentType) == "application/json" {
 		ErrorJSON(ctx, status)

@@ -4,6 +4,7 @@ import (
 	"github.com/valyala/fasthttp"
 
 	cfg "github.com/absinsekt/pnk/configuration"
+	"github.com/absinsekt/pnk/controllers/middlewares/csrf"
 	"github.com/absinsekt/pnk/lib/responses"
 )
 
@@ -28,24 +29,30 @@ func BuildAuth(staffOnly bool) func(next fasthttp.RequestHandler) fasthttp.Reque
 			session := &SessionData{}
 
 			if err := cfg.SecureVault.Decode(SessionNS, cookie, &session); err != nil {
-				responses.ErrorResponse(ctx, fasthttp.StatusForbidden)
+				deny(ctx)
 				return
 			}
 
 			if session.SessionVersion != cfg.SessionVersion {
-				ctx.SetUserValue(SessionNS, nil)
-				responses.ClearCookie(ctx, SessionNS)
-				responses.ErrorResponse(ctx, fasthttp.StatusForbidden)
+				deny(ctx)
 				return
 			}
 
 			if staffOnly && !session.IsStaff {
-				responses.ErrorResponse(ctx, fasthttp.StatusForbidden)
+				deny(ctx)
 				return
 			}
 
+			ctx.Response.Header.Add("Vary", "Cookie")
 			ctx.SetUserValue(SessionNS, session)
 			next(ctx)
 		}
 	}
+}
+
+func deny(ctx *fasthttp.RequestCtx) {
+	ctx.SetUserValue(SessionNS, nil)
+	responses.ClearCookie(ctx, SessionNS)
+	responses.ClearCookie(ctx, csrf.TokenCookieName)
+	responses.ErrorResponse(ctx, fasthttp.StatusForbidden)
 }

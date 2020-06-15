@@ -48,7 +48,7 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 	}
 
 	if encoded, err := cfg.SecureVault.Encode(mw.SessionNS, sess); err == nil {
-		responses.SetCookie(ctx, mw.SessionNS, encoded, "/", 12*time.Hour)
+		responses.SetRootCookie(ctx, mw.SessionNS, encoded, 12*time.Hour)
 	}
 
 	responses.SuccessJSON(ctx, fasthttp.StatusAccepted, sess)
