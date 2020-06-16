@@ -1,8 +1,6 @@
 package users
 
 import (
-	"fmt"
-
 	"github.com/valyala/fasthttp"
 
 	cfg "github.com/absinsekt/pnk/configuration"
@@ -12,7 +10,6 @@ import (
 
 // Mount all subroutes
 func Mount(path string) fasthttp.RequestHandler {
-	fmt.Println(path)
 	if path == cfg.PathRoot {
 		return mw.Get(GetList)
 	}
