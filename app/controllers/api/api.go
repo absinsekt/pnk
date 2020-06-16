@@ -14,11 +14,13 @@ import (
 
 // Mount all subroutes
 func Mount(path string) fasthttp.RequestHandler {
+	mwAuth := mw.BuildAuth(true)
+
 	if path == cfg.PathAPIAuth {
 		return mw.Post(csrf.Protect(authHandler))
 
 	} else if strings.HasPrefix(path, cfg.PathAPIUsers) {
-		return users.Mount(strings.TrimPrefix(path, cfg.PathAPIUsers))
+		return mwAuth(users.Mount(strings.TrimPrefix(path, cfg.PathAPIUsers)))
 	}
 
 	return responses.DummyResponseHandler

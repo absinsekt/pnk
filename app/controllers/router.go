@@ -39,11 +39,11 @@ func buildProductionRootHandler(templateSet *ts.TemplateSet) fasthttp.RequestHan
 			return
 
 		} else if strings.HasPrefix(path, cfg.PathAPI) {
-			mwAuth(api.Mount(strings.TrimPrefix(path, cfg.PathAPI)))(ctx)
+			api.Mount(strings.TrimPrefix(path, cfg.PathAPI))(ctx)
 			return
 
 		} else if strings.HasPrefix(path, cfg.PathAdmin) {
-			admin.Mount(strings.TrimPrefix(path, cfg.PathAdmin))(ctx)
+			mwAuth(admin.Mount(strings.TrimPrefix(path, cfg.PathAdmin)))(ctx)
 			return
 
 		} else {

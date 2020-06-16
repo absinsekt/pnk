@@ -10,10 +10,8 @@ import (
 
 // Mount all subroutes
 func Mount(path string) fasthttp.RequestHandler {
-	mwAuth := mw.BuildAuth(true)
-
 	if path == cfg.PathRoot {
-		return mw.Get(mwAuth(indexHandler))
+		return mw.Get(indexHandler)
 	}
 
 	return responses.DummyResponseHandler
