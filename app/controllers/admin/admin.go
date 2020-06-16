@@ -5,7 +5,6 @@ import (
 
 	cfg "github.com/absinsekt/pnk/configuration"
 	mw "github.com/absinsekt/pnk/controllers/middlewares"
-	"github.com/absinsekt/pnk/controllers/middlewares/csrf"
 	"github.com/absinsekt/pnk/lib/responses"
 )
 
@@ -15,9 +14,6 @@ func Mount(path string) fasthttp.RequestHandler {
 
 	if path == cfg.PathRoot {
 		return mw.Get(mwAuth(indexHandler))
-
-	} else if path == cfg.PathAdminAuth {
-		return mw.Post(csrf.Protect(authHandler))
 	}
 
 	return responses.DummyResponseHandler

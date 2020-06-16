@@ -10,8 +10,8 @@ const (
 	PathRootPages = "/pages"
 
 	PathAPI      = "/api"
+	PathAPIAuth  = "/auth/"
 	PathAPIUsers = "/users"
 
-	PathAdmin     = "/squat"
-	PathAdminAuth = "/auth/"
+	PathAdmin = "/squat"
 )

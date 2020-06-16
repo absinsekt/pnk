@@ -9,7 +9,7 @@
 </script>
 
 <Form
-  action="/squat/auth/"
+  action="/api/auth/"
   store={LoginApp.store}
   token={window._CSRF_TOKEN}
   on:success={() => LoginApp.openAdmin()}
