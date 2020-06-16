@@ -3,10 +3,10 @@ package admin
 import (
 	"github.com/valyala/fasthttp"
 
-	ts "github.com/absinsekt/pnk/lib/templateset"
+	"github.com/absinsekt/pnk/lib/templateset"
 )
 
 func indexHandler(ctx *fasthttp.RequestCtx) {
-	templateSet := ctx.UserValue(ts.TemplateSetNS).(*ts.TemplateSet)
+	templateSet := ctx.UserValue(templateset.TemplateSetNS).(*templateset.TemplateSet)
 	templateSet.Render(ctx, "admin_index.html", nil)
 }

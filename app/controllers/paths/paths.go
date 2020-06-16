@@ -1,4 +1,4 @@
-package configuration
+package paths
 
 // path part should be without end slash
 // terminating path should be with end slash

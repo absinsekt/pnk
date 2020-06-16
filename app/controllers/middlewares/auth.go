@@ -3,7 +3,7 @@ package middlewares
 import (
 	"github.com/valyala/fasthttp"
 
-	cfg "github.com/absinsekt/pnk/configuration"
+	"github.com/absinsekt/pnk/configuration"
 	"github.com/absinsekt/pnk/controllers/middlewares/csrf"
 	"github.com/absinsekt/pnk/lib/responses"
 )
@@ -28,12 +28,12 @@ func BuildAuth(staffOnly bool) func(next fasthttp.RequestHandler) fasthttp.Reque
 			cookie := string(ctx.Request.Header.Cookie(SessionNS))
 			session := SessionData{}
 
-			if err := cfg.SecureVault.Decode(SessionNS, cookie, &session); err != nil {
+			if err := configuration.SecureVault.Decode(SessionNS, cookie, &session); err != nil {
 				deny(ctx)
 				return
 			}
 
-			if session.SessionVersion != cfg.SessionVersion {
+			if session.SessionVersion != configuration.SessionVersion {
 				deny(ctx)
 				return
 			}

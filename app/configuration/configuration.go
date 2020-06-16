@@ -8,7 +8,7 @@ import (
 
 	"github.com/absinsekt/pnk/lib/strings"
 	"github.com/gorilla/securecookie"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -44,8 +44,8 @@ func init() {
 
 	if Debug {
 		// TODO tabled info
-		log.Printf("SecureVault:\t\t%v", SecureAuthKey)
-		log.Printf("SecureVault:\t\t%v", SecureEncryptionKey)
+		logrus.Printf("SecureVault:\t\t%v", SecureAuthKey)
+		logrus.Printf("SecureVault:\t\t%v", SecureEncryptionKey)
 	}
 }
 

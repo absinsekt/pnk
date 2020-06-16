@@ -6,6 +6,8 @@ import (
 	"github.com/go-pg/pg/v9"
 	"github.com/go-pg/pg/v9/orm"
 
+	"github.com/absinsekt/pnk/configuration"
+	"github.com/absinsekt/pnk/lib/core"
 	"github.com/absinsekt/pnk/lib/crypto"
 	"github.com/absinsekt/pnk/lib/strings"
 	"github.com/absinsekt/pnk/models"
@@ -100,15 +102,24 @@ func CreateUser(username, password, firstName, lastName, email string, isStaff, 
 	return models.DB.Insert(user)
 }
 
-func GetList() []User {
-	users := make([]User, 1)
+func GetList() ([]User, error) {
+	method := func() (interface{}, error) {
+		data := []User{}
 
-	models.DB.
-		Model(users).
-		Where("is_active = ?", true).
-		Select()
+		err := models.DB.
+			Model(&data).
+			Where("is_active = ?", true).
+			Select()
 
-	return users
+		return data, err
+	}
+
+	result, err := core.GetCached("user.GetList", configuration.SecondsFrequently, method)
+	if err != nil {
+		return nil, err
+	}
+
+	return result.([]User), nil
 }
 
 // maintenance functions to be run with go test

@@ -3,15 +3,15 @@ package admin
 import (
 	"github.com/valyala/fasthttp"
 
-	cfg "github.com/absinsekt/pnk/configuration"
-	mw "github.com/absinsekt/pnk/controllers/middlewares"
+	"github.com/absinsekt/pnk/controllers/middlewares"
+	"github.com/absinsekt/pnk/controllers/paths"
 	"github.com/absinsekt/pnk/lib/responses"
 )
 
 // Mount all subroutes
 func Mount(path string) fasthttp.RequestHandler {
-	if path == cfg.PathRoot {
-		return mw.Get(indexHandler)
+	if path == paths.PathRoot {
+		return middlewares.Get(indexHandler)
 	}
 
 	return responses.DummyResponseHandler

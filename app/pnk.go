@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
 	"github.com/absinsekt/pnk/configuration"
@@ -15,7 +15,7 @@ import (
 func main() {
 	initLogger()
 
-	log.Info("Pnk is starting")
+	logrus.Info("Pnk is starting")
 
 	models.CheckConnection()
 
@@ -29,17 +29,17 @@ func main() {
 		ReduceMemoryUsage: true,
 	}
 
-	log.Infof("Listening on http://%s/", addr)
-	log.Fatalln(srv.ListenAndServe(addr))
+	logrus.Infof("Listening on http://%s/", addr)
+	logrus.Fatalln(srv.ListenAndServe(addr))
 }
 
 func initLogger() {
-	log.SetFormatter(&log.TextFormatter{
+	logrus.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp:          true,
 		DisableLevelTruncation: true,
 	})
 
 	if configuration.Debug {
-		log.SetLevel(log.DebugLevel)
+		logrus.SetLevel(logrus.DebugLevel)
 	}
 }

@@ -5,45 +5,46 @@ import (
 
 	"github.com/valyala/fasthttp"
 
-	cfg "github.com/absinsekt/pnk/configuration"
+	"github.com/absinsekt/pnk/configuration"
 	"github.com/absinsekt/pnk/controllers/admin"
 	"github.com/absinsekt/pnk/controllers/api"
-	mw "github.com/absinsekt/pnk/controllers/middlewares"
+	"github.com/absinsekt/pnk/controllers/middlewares"
+	"github.com/absinsekt/pnk/controllers/paths"
 	"github.com/absinsekt/pnk/controllers/www"
 	"github.com/absinsekt/pnk/lib"
 	"github.com/absinsekt/pnk/lib/responses"
-	ts "github.com/absinsekt/pnk/lib/templateset"
+	"github.com/absinsekt/pnk/lib/templateset"
 )
 
 // NewRouter creates root loader and mounts subrouters
 func NewRouter() func(*fasthttp.RequestCtx) {
-	templateSet, err := ts.NewTemplateSet(cfg.TemplatePath)
+	templateSet, err := templateset.NewTemplateSet(configuration.TemplatePath)
 	lib.Check(err, true)
 
-	if cfg.Debug {
+	if configuration.Debug {
 		return buildDevRootHandler(templateSet)
 	}
 
 	return buildProductionRootHandler(templateSet)
 }
 
-func buildProductionRootHandler(templateSet *ts.TemplateSet) fasthttp.RequestHandler {
+func buildProductionRootHandler(templateSet *templateset.TemplateSet) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		path := string(ctx.Path())
-		mwAuth := mw.BuildAuth(true)
+		mwAuth := middlewares.BuildAuth(true)
 
-		ctx.SetUserValue(ts.TemplateSetNS, templateSet)
+		ctx.SetUserValue(templateset.TemplateSetNS, templateSet)
 
-		if path == cfg.PathRoot {
+		if path == paths.PathRoot {
 			www.Mount(path)(ctx)
 			return
 
-		} else if strings.HasPrefix(path, cfg.PathAPI) {
-			api.Mount(strings.TrimPrefix(path, cfg.PathAPI))(ctx)
+		} else if strings.HasPrefix(path, paths.PathAPI) {
+			api.Mount(strings.TrimPrefix(path, paths.PathAPI))(ctx)
 			return
 
-		} else if strings.HasPrefix(path, cfg.PathAdmin) {
-			mwAuth(admin.Mount(strings.TrimPrefix(path, cfg.PathAdmin)))(ctx)
+		} else if strings.HasPrefix(path, paths.PathAdmin) {
+			mwAuth(admin.Mount(strings.TrimPrefix(path, paths.PathAdmin)))(ctx)
 			return
 
 		} else {
@@ -52,7 +53,7 @@ func buildProductionRootHandler(templateSet *ts.TemplateSet) fasthttp.RequestHan
 	}
 }
 
-func buildDevRootHandler(templateSet *ts.TemplateSet) fasthttp.RequestHandler {
+func buildDevRootHandler(templateSet *templateset.TemplateSet) fasthttp.RequestHandler {
 	fsHandlerOptions := &fasthttp.FS{
 		Root:        "../www/dist",
 		PathRewrite: fasthttp.NewPathSlashesStripper(1),
@@ -64,12 +65,12 @@ func buildDevRootHandler(templateSet *ts.TemplateSet) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		path := string(ctx.Path())
 
-		if path == cfg.PathFaviconIco {
+		if path == paths.PathFaviconIco {
 			ctx.SetStatusCode(fasthttp.StatusNotFound)
 			return
 		}
 
-		if strings.HasPrefix(path, cfg.PathDist) {
+		if strings.HasPrefix(path, paths.PathDist) {
 			staticHandler(ctx)
 			return
 		}

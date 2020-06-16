@@ -8,8 +8,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
-	cfg "github.com/absinsekt/pnk/configuration"
-	mw "github.com/absinsekt/pnk/controllers/middlewares"
+	"github.com/absinsekt/pnk/configuration"
+	"github.com/absinsekt/pnk/controllers/middlewares"
 	"github.com/absinsekt/pnk/lib/responses"
 	"github.com/absinsekt/pnk/models/user"
 )
@@ -26,7 +26,6 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
-
 	// try to authenticate user
 	usr, err := user.Auth(creds.Login, creds.Password)
 	if err != nil {
@@ -40,15 +39,15 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	sess := mw.SessionData{
+	sess := middlewares.SessionData{
 		UserID:         usr.ID,
 		IsActive:       usr.IsActive,
 		IsStaff:        usr.IsStaff,
-		SessionVersion: cfg.SessionVersion,
+		SessionVersion: configuration.SessionVersion,
 	}
 
-	if encoded, err := cfg.SecureVault.Encode(mw.SessionNS, &sess); err == nil {
-		responses.SetRootCookie(ctx, mw.SessionNS, encoded, 12*time.Hour)
+	if encoded, err := configuration.SecureVault.Encode(middlewares.SessionNS, &sess); err == nil {
+		responses.SetRootCookie(ctx, middlewares.SessionNS, encoded, 12*time.Hour)
 	}
 
 	responses.SuccessJSON(ctx, fasthttp.StatusAccepted, sess, 1, 0)
