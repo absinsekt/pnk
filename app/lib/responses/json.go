@@ -7,9 +7,9 @@ import (
 )
 
 type responseData struct {
-	Items  []interface{} `json:"items"`
-	Count  int64         `json:"count"`
-	Offset int64         `json:"offset"`
+	Items  interface{} `json:"items"`
+	Count  int         `json:"count"`
+	Offset int         `json:"offset"`
 }
 
 type successResponse struct {
@@ -40,14 +40,14 @@ func writeJSON(ctx *fasthttp.RequestCtx, status int, data interface{}) error {
 }
 
 // SuccessJSON todo descr
-func SuccessJSON(ctx *fasthttp.RequestCtx, status int, data interface{}) error {
+func SuccessJSON(ctx *fasthttp.RequestCtx, status int, data interface{}, count int, offset int) error {
 	return writeJSON(ctx, status, &successResponse{
 		Status:  "success",
 		Message: "",
 		Data: responseData{
-			Items:  []interface{}{data},
-			Count:  1,
-			Offset: 0,
+			Items:  data,
+			Count:  count,
+			Offset: offset,
 		},
 	})
 }

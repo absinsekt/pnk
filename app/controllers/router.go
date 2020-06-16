@@ -7,6 +7,8 @@ import (
 
 	cfg "github.com/absinsekt/pnk/configuration"
 	"github.com/absinsekt/pnk/controllers/admin"
+	"github.com/absinsekt/pnk/controllers/api"
+	mw "github.com/absinsekt/pnk/controllers/middlewares"
 	"github.com/absinsekt/pnk/controllers/www"
 	"github.com/absinsekt/pnk/lib"
 	"github.com/absinsekt/pnk/lib/responses"
@@ -28,10 +30,16 @@ func NewRouter() func(*fasthttp.RequestCtx) {
 func buildProductionRootHandler(templateSet *ts.TemplateSet) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		path := string(ctx.Path())
+		mwAuth := mw.BuildAuth(true)
+
 		ctx.SetUserValue(ts.TemplateSetNS, templateSet)
 
 		if path == cfg.PathRoot {
 			www.Mount(path)(ctx)
+			return
+
+		} else if strings.HasPrefix(path, cfg.PathAPI) {
+			mwAuth(api.Mount(strings.TrimPrefix(path, cfg.PathAPI)))(ctx)
 			return
 
 		} else if strings.HasPrefix(path, cfg.PathAdmin) {

@@ -40,16 +40,16 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	sess := &mw.SessionData{
+	sess := mw.SessionData{
 		UserID:         usr.ID,
 		IsActive:       usr.IsActive,
 		IsStaff:        usr.IsStaff,
 		SessionVersion: cfg.SessionVersion,
 	}
 
-	if encoded, err := cfg.SecureVault.Encode(mw.SessionNS, sess); err == nil {
+	if encoded, err := cfg.SecureVault.Encode(mw.SessionNS, &sess); err == nil {
 		responses.SetRootCookie(ctx, mw.SessionNS, encoded, 12*time.Hour)
 	}
 
-	responses.SuccessJSON(ctx, fasthttp.StatusAccepted, sess)
+	responses.SuccessJSON(ctx, fasthttp.StatusAccepted, sess, 1, 0)
 }

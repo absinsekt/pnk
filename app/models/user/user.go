@@ -100,6 +100,17 @@ func CreateUser(username, password, firstName, lastName, email string, isStaff, 
 	return models.DB.Insert(user)
 }
 
+func GetList() []User {
+	users := make([]User, 1)
+
+	models.DB.
+		Model(users).
+		Where("is_active = ?", true).
+		Select()
+
+	return users
+}
+
 // maintenance functions to be run with go test
 func createUserTable() error {
 	var (

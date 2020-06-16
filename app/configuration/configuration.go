@@ -8,6 +8,7 @@ import (
 
 	"github.com/absinsekt/pnk/lib/strings"
 	"github.com/gorilla/securecookie"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -40,6 +41,12 @@ func init() {
 		[]byte(SecureAuthKey),
 		[]byte(SecureEncryptionKey),
 	)
+
+	if Debug {
+		// TODO tabled info
+		log.Printf("SecureVault:\t\t%v", SecureAuthKey)
+		log.Printf("SecureVault:\t\t%v", SecureEncryptionKey)
+	}
 }
 
 func getEnv(key string, fallback interface{}) interface{} {

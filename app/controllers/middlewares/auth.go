@@ -26,7 +26,7 @@ func BuildAuth(staffOnly bool) func(next fasthttp.RequestHandler) fasthttp.Reque
 	return func(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 		return func(ctx *fasthttp.RequestCtx) {
 			cookie := string(ctx.Request.Header.Cookie(SessionNS))
-			session := &SessionData{}
+			session := SessionData{}
 
 			if err := cfg.SecureVault.Decode(SessionNS, cookie, &session); err != nil {
 				deny(ctx)
