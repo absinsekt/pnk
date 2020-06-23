@@ -1,7 +1,6 @@
-<style src="./inline/inline.styl"></style>
+<style src="./textarea/textarea.styl"></style>
 
 <script>
-  import { imask } from '@imask/svelte';
   import { onMount, onDestroy } from 'svelte';
   import { ID } from 'app/core/numbers';
   import { isSet, isUnset } from 'app/core/objects';
@@ -16,12 +15,10 @@
 
   export let label = '';
   export let placeholder = '';
-  export let type = 'text';
-  export let mask = '';
   export let validators;
   export let size = 'md';
 
-  const id = `inline-${ID(8)}`;
+  const id = `textarea-${ID(8)}`;
 
   let thisForm;
   const thisForm_unsubscribe = store.subscribe(v => thisForm = v);
@@ -48,37 +45,13 @@
     class:x2={size === 'md'}
     class:x3={size === 'lg'}
   >
-  {#if mask === ''}
-    <input class="pnk-inline"
+    <textarea class="pnk-textarea"
       {id}
       {name}
       {placeholder}
-      {type}
-      value={thisField.value}
-
       class:x2={size === 'md'}
       class:x3={size === 'lg'}
-
-      class:error={!thisField.isValid}
-      on:input={(e) => updateFieldValue(store, name, e.target.value)}
-      on:input={(e) => validate(e.target.value)}
-      on:input />
-  {:else}
-    <input class="pnk-inline"
-      {id}
-      {name}
-      {placeholder}
-      type=text
-      value={thisField.value}
-
-      class:x2={size === 'md'}
-      class:x3={size === 'lg'}
-
-      class:error={!thisField.isValid}
-      use:imask={{mask: mask, lazy: true}}
-      on:accept={({detail}) => updateFieldValue(store, name, detail.value)}
-      on:accept={({detail}) => validate(detail.unmaskedValue)} />
-  {/if}
+    ></textarea>
   </div>
 
   <div class="pnk-error">

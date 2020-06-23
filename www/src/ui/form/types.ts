@@ -1,6 +1,6 @@
 export type Form = {
   action: string;
-  fields: FormValue[];
+  fields: {[key: string]: FormValue<string|number|boolean>};
   isTouched: boolean;
   isValid: boolean;
 }

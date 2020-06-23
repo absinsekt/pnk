@@ -1,4 +1,4 @@
-<style src="./submit.styl"></style>
+<style src="./submit/submit.styl"></style>
 
 <script>
   import { onMount, onDestroy } from 'svelte';
@@ -7,6 +7,10 @@
   export let store;
   export let label = 'Submit';
   export let disabled = null;
+  // size
+  export let size = 'md';
+  // block
+  export let block = false;
 
   let form = null;
 
@@ -18,8 +22,13 @@
     || (form !== null && form.isTouched && !form.isValid);
 </script>
 
-<input class="submit"
+<input class="pnk-submit"
   type=submit
   value={label}
   disabled={isDisabled()}
+  class:block={block}
+
+  class:x2={size === 'md'}
+  class:x3={size === 'lg'}
+
   on:click />

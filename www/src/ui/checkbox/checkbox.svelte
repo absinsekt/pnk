@@ -9,6 +9,7 @@
   import { buildValidate } from 'ui/validators';
 
   import Icon from 'ui/icon/icon.svelte';
+  import IcoCheck from 'ui/paths/check.svelte';
 
   const id = `input-${ID(8)}`;
 
@@ -44,7 +45,7 @@
       on:click={toggle}>
 
       {#if value}
-      <span transition:scale="{{duration:150}}"><Icon type="check" /></span>
+      <span transition:scale="{{duration:150}}"><Icon src={IcoCheck} /></span>
       {/if}
 
       <input class="pcb-input" type=checkbox {id} {name} bind:checked={value} />

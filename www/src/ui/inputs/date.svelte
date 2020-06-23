@@ -1,4 +1,4 @@
-<style src="./dropdown/dropdown.styl"></style>
+<style src="./date/date.styl"></style>
 
 <script>
   import { slide } from 'svelte/transition';
@@ -8,9 +8,9 @@
   import { updateFieldValue } from 'ui/form/form';
   import { buildValidate } from 'ui/validators';
 
+  import Calendar from './date/components/calendar/calendar.svelte';
   import Icon from 'ui/icon/icon.svelte';
-  import IcoChevronDown from 'ui/paths/chevron-down.svelte';
-  import IcoChevronDownBox from 'ui/paths/chevron-down-box.svelte';
+  import IcoCalendar from 'ui/paths/calendar.svelte';
 
   const id = `input-${ID(8)}`;
 
@@ -22,9 +22,6 @@
   export let value = '';
   // validators
   export let validators = [];
-  // items
-  export let items = [];
-
   // label for the field
   export let label = '';
   // placeholder
@@ -45,20 +42,18 @@
     });
   }
 
-  let isItemsVisible = false;
+  let isPickerVisible = false;
 
-  function dropDown() {
-    if (items.length > 0) {
-      isItemsVisible = !isItemsVisible
-    }
+  function toggle() {
+    isPickerVisible = !isPickerVisible
   }
 
   function onBlur(e) {
-    const group = isSet(e.relatedTarget)
-      ? e.relatedTarget.getAttribute('data-group')
-      : null;
+    // const group = isSet(e.relatedTarget)
+    //   ? e.relatedTarget.getAttribute('data-group')
+    //   : null;
 
-    if (group !== id) isItemsVisible = false;
+    // if (group !== id) isPickerVisible = false;
   }
 
   function onSelect(itm) {
@@ -69,11 +64,11 @@
       validate(itm.value);
     }
 
-    isItemsVisible = false;
+    isPickerVisible = false;
   }
 </script>
 
-<div class="pnk-wgt pnk-dropdown">
+<div class="pnk-wgt pnk-date">
   {#if label !== ''}
   <label class="pnk-label" for={id}>
     {label}
@@ -96,7 +91,7 @@
       data-group={id}
       readonly={true}
       bind:value={value.label}
-      on:click={dropDown}
+      on:click={toggle}
       on:blur={onBlur}
     />
 
@@ -104,45 +99,22 @@
       data-group={id}
       class:x2={size === 'md'}
       class:x3={size === 'lg'}
-      on:click|preventDefault|stopPropagation={dropDown}
+      on:click|preventDefault|stopPropagation={toggle}
       on:blur={onBlur}>
 
       <Icon
         {size}
-        src={IcoChevronDown}
-        rotated={isItemsVisible} />
+        src={IcoCalendar} />
     </button>
   </div>
 
-  {#if isItemsVisible}
+  {#if isPickerVisible}
   <div class="pnk-drawer-wrap">
-    <div transition:slide class="pnk-list-drawer"
+    <div transition:slide class="pnk-date-drawer"
       class:x2={size === 'md'}
-      class:x3={size === 'lg'}>
-    {#each items as item}
-      <div class="pnk-list-item"
-        class:x2={size === 'md'}
-        class:x3={size === 'lg'}
-        on:click|preventDefault|stopPropagation={onSelect(item)}>
-
-        <a class:pnk-li-current={item.id === value.id} href="."
-          class:x2={size === 'md'}
-          class:x3={size === 'lg'}
-          data-group={id}>
-
-          {item.label}
-        </a>
-
-        <div class="pnk-dd-selected"
-          class:x2={size === 'md'}
-          class:x3={size === 'lg'}
-        >
-        {#if item.id === value.id}
-          <Icon {size} src={IcoChevronDownBox} />
-        {/if}
-        </div>
-      </div>
-    {/each}
+      class:x3={size === 'lg'}
+    >
+      <Calendar />
     </div>
   </div>
   {/if}

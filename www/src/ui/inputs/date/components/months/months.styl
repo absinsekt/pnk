@@ -1,0 +1,22 @@
+.pnk-date-months
+  display: flex
+  flex-direction: column
+  height: unit($theme-wgt-size-step * 8, 'rem')
+  padding: unit($theme-wgt-size-step/4, 'rem')
+
+  .pnk-date-week
+    width: 100%
+    height: 100%
+    display: block
+    list-style: none
+    margin: 0
+    padding: 0
+
+    .pnk-date-day
+      display: inline-block
+      width: calc(100% / 3)
+      height: calc(100% / 3)
+      text-align: right
+      color: grey
+      cursor: pointer
+

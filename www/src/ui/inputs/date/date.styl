@@ -3,8 +3,6 @@
 @import 'ui/styles/container'
 @import 'ui/styles/error'
 
-@import 'ui/lists/all'
-
 pl-holder()
   font-weight: 400
   font-style: italic
@@ -59,28 +57,19 @@ pl-holder()
     width: unit($theme-wgt-size-step * 1.875, 'rem')
     height: unit($theme-wgt-size-step * 1.875, 'rem')
 
-.pnk-dd-selected
-  display: flex
-  align-items: center
-  justify-content: center
+.pnk-drawer-wrap
+  position: relative
+  width: 100%
+  height: 0
+  z-index: 10
 
-.pnk-list-item
-  color: $theme-wgt-text
-  font-family: $fnt-sns
+  .pnk-date-drawer
+    border: $theme-wgt-border-size solid $theme-wgt-border
+    border-top: none
+    background-color: $theme-wgt-background
 
-  .pnk-li-current
-    font-weight: 600
+    &.x2
+      border-width: $theme-wgt-border-size
 
-  &:hover
-    .pnk-dd-selected
-      color: $theme-wgt-background
-
-  &.x2
-    height: unit($theme-wgt-size-step, 'rem')
-    padding: unit($theme-wgt-size-step / 4, 'rem')
-    padding-right: unit($theme-wgt-size-step / 6, 'rem')
-
-  &.x3
-    height: unit($theme-wgt-size-step * 1.875, 'rem')
-    padding: unit($theme-wgt-size-step / 1.875, 'rem')
-    padding-right: unit($theme-wgt-size-step / 2.25, 'rem')
+    &.x3
+      border-width: $theme-wgt-border-size * 2

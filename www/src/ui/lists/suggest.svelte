@@ -29,6 +29,8 @@
   export let suggest = null;
   // minimum length to suggest
   export let minlength = 3;
+  // size
+  export let size = 'md';
 
   const validate = buildValidate(store, name, validators);
 
@@ -81,19 +83,27 @@
 </script>
 
 <div class="pnk-wgt">
+  {#if label !== ''}
   <label class="pnk-label" for={id}>
     {label}
     {#if isSet(validators)}<span class="pnk-required">*</span>{/if}
   </label>
+  {/if}
 
-  <div class="pnk-container">
+  <div class="pnk-container"
+    class:x2={size === 'md'}
+    class:x3={size === 'lg'}>
+
     <input class="pnk-input" type=text
       {id}
       {name}
       {placeholder}
+      class:x2={size === 'md'}
+      class:x3={size === 'lg'}
       data-group={id}
       bind:value={value}
       on:blur={onBlur}
+      on:input={(e) => validate(e.target.value)}
       on:input={debounce}
     />
 
@@ -101,12 +111,19 @@
 
   {#if isItemsVisible}
   <div class="pnk-drawer-wrap">
-    <div transition:slide class="pnk-list-drawer">
+    <div transition:slide class="pnk-list-drawer"
+      class:x2={size === 'md'}
+      class:x3={size === 'lg'}>
+
     {#each items as item}
       <div class="pnk-list-item"
+        class:x2={size === 'md'}
+        class:x3={size === 'lg'}
         on:click|preventDefault|stopPropagation={onSelect(item)}>
 
         <a href="."
+          class:x2={size === 'md'}
+          class:x3={size === 'lg'}
           data-group={id}>
 
           {item.label}
