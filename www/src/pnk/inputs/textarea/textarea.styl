@@ -1,0 +1,49 @@
+@import 'pnk/styles/widget'
+@import 'pnk/styles/label'
+@import 'pnk/styles/container'
+@import 'pnk/styles/error'
+
+pl-holder()
+  font-weight: 400 !important
+  font-style: italic !important
+  color: lighten($theme-wgt-text, 30) !important
+
+.pnk-textarea
+  width: 100%
+  font-family: $fnt-sns
+  font-weight: 600
+
+  &::placeholder
+    pl-holder()
+
+  &::-ms-input-placeholder
+    pl-holder()
+
+  &::-webkit-input-placeholder
+    pl-holder()
+
+  &::-moz-placeholder
+    pl-holder()
+
+  &:-ms-input-placeholder
+    pl-holder()
+
+  &:-moz-placeholder
+    pl-holder()
+
+  &.x2
+    height: unit($theme-wgt-size-step * 3, 'rem')
+    padding: unit($theme-wgt-size-step / 4, 'rem')
+    font-size: unit($theme-wgt-size-step / 2, 'rem')
+
+  &.x3
+    height: unit($theme-wgt-size-step * 3, 'rem')
+    padding: unit($theme-wgt-size-step / 2, 'rem')
+    font-size: unit($theme-wgt-size-step / 2, 'rem')
+
+.pnk-container
+  &.x2
+    border-width: $theme-wgt-border-size
+
+  &.x3
+    border-width: $theme-wgt-border-size * 2

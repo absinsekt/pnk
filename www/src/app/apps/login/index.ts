@@ -1,5 +1,5 @@
 import { Writable, writable } from 'svelte/store';
-import { FormValue } from 'ui/form/types';
+import { FormValue } from 'pnk/form/types';
 import App from './app.svelte';
 
 export type LoginFormStore = {

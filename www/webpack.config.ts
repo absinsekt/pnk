@@ -58,7 +58,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
         test: /\.ts$/,
         include: [
           path.resolve(__dirname, 'src/app'),
-          path.resolve(__dirname, 'src/ui'),
+          path.resolve(__dirname, 'src/pnk'),
         ],
         use: {
           loader: 'ts-loader',

@@ -1,0 +1,67 @@
+@import 'pnk/styles/theme'
+@import 'pnk/styles/mixins'
+
+.pnk-date-header
+  display: flex
+  flex-direction: row
+  align-items: center
+  justify-content: space-between
+  height: unit($theme-wgt-size-step, 'rem')
+
+  a
+    font-weight: 600
+    color: $theme-wgt-text
+    text-decoration: none
+    text-transform: uppercase
+
+    &:hover
+      text-decoration: underline
+
+daybox()
+  display: inline-block
+  width: calc(100% / 7)
+  height: calc(100% / 7)
+  text-align: center
+  line-height: unit($theme-wgt-size-step, 'rem')
+
+.pnk-date-week
+  width: 100%
+  height: unit($theme-wgt-size-step * 7, 'rem')
+  display: block
+  list-style: none
+  margin: 0
+  padding: 0
+
+  .pnk-date-day
+    daybox()
+
+    border-radius: unit($theme-wgt-size-step/6, 'rem')
+    color: grey
+    cursor: pointer
+    transition: $tran-x1 color, $tran-x1 background-color
+
+    &.month
+      color: black
+
+      &:hover
+        background-color: alpha(red, .5)
+
+    &.today
+      font-weight: 800
+
+    &.selected
+      color: black
+      background-color: red
+
+    &.disabled
+      color: grey
+
+      &:hover
+        background-color: unset
+
+  .pnk-date-weekday
+    daybox()
+
+    text-transform: uppercase
+    font-weight: 600
+    cursor: default

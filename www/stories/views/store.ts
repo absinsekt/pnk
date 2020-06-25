@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { FormValue } from 'ui/form/types';
+import { FormValue } from 'pnk/form/types';
 
 export type OrderFormStore = {
   isTouched: boolean;

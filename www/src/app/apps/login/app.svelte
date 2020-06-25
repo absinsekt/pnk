@@ -1,9 +1,9 @@
 <script>
-  import Form from 'ui/form/form.svelte';
-  import Inline from 'ui/inputs/inline.svelte';
-  import Submit from 'ui/submit/submit.svelte';
+  import Form from 'pnk/form/form.svelte';
+  import Inline from 'pnk/inputs/inline.svelte';
+  import Submit from 'pnk/buttons/submit.svelte';
 
-  import { required } from 'ui/validators/validators';
+  import { required } from 'pnk/validators/validators';
 
   import { LoginApp } from '.';
 </script>

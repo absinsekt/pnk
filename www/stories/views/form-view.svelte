@@ -1,12 +1,12 @@
 <script>
-  import Form from 'ui/form/form.svelte';
-  import Inline from 'ui/inputs/inline.svelte';
-  import Suggest from 'ui/lists/suggest.svelte';
-  import Dropdown from 'ui/lists/dropdown.svelte';
-  import Submit from 'ui/buttons/submit.svelte';
+  import Form from 'pnk/form/form.svelte';
+  import Inline from 'pnk/inputs/inline.svelte';
+  import Suggest from 'pnk/lists/suggest.svelte';
+  import Dropdown from 'pnk/lists/dropdown.svelte';
+  import Submit from 'pnk/buttons/submit.svelte';
 
-  import { validName, required } from 'ui/validators/validators';
-  import { dadataSuggest, validApt } from 'ui/lists/suggest/providers/dadata';
+  import { validName, required } from 'pnk/validators/validators';
+  import { dadataSuggest, validApt } from 'pnk/lists/suggest/providers/dadata';
 
   import { form } from './store';
 </script>

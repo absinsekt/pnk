@@ -1,0 +1,47 @@
+.pnk-drawer-wrap
+  position: relative
+  width: 100%
+  height: 0
+  z-index: 10
+
+  .pnk-list-drawer
+    overflow: hidden
+    border: $theme-wgt-border-size solid $theme-wgt-border
+    border-top: none
+    max-height: "calc(%s + 1px)" % unit($theme-wgt-size-step * 5, 'rem')
+    background-color: $theme-wgt-background
+
+    &.x2
+      border-width: $theme-wgt-border-size
+
+    &.x3
+      border-width: $theme-wgt-border-size * 2
+
+    .pnk-list-item
+      display: flex
+      flex-direction: row
+      cursor: pointer
+      align-items: center
+
+      a
+        color: $theme-wgt-text
+        font-size: 1rem
+        display: block
+        text-decoration: none
+        white-space: nowrap
+        overflow: hidden
+        text-overflow: ellipsis
+        flex-grow: 1
+
+      &:hover
+        background-color: $theme-wgt-selection
+
+        a
+          color: $theme-wgt-background
+
+.pnk-container
+  &.x2
+    border-width: $theme-wgt-border-size
+
+  &.x3
+    border-width: $theme-wgt-border-size * 2

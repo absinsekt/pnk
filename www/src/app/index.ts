@@ -1,4 +1,4 @@
-import { isMobile } from './core/detect';
+import { isMobile } from '../pnk/core/detect';
 import { initApps } from './applications';
 
 if (!isMobile()) {
