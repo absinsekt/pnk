@@ -37,6 +37,11 @@
   export let minDate = getOffsetDate(now, 0, -2, 0);
   // maxDate
   export let maxDate = getOffsetDate(now, 0, 2, 0);
+  // isSundayFirst
+  export let isSundayFirst = false;
+  // isWeekendDisabled
+  export let isWeekendDisabled = false;
+
 
   const validate = buildValidate(store, name, validators);
 
@@ -150,6 +155,8 @@
         <Days
           bind:mode
           bind:offsetDate
+          {isSundayFirst}
+          {isWeekendDisabled}
           {maxDate}
           {minDate}
           {now}

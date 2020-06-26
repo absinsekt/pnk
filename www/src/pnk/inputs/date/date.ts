@@ -10,6 +10,26 @@ export type CalendarDay = {
   isSelected: boolean;
   isActiveMonth: boolean;
   isDisabled: boolean;
+  isFirst: boolean;
+  isLast: boolean;
+}
+
+export class CalendarConfig {
+  constructor(
+    public today = new Date(),
+    public selectedDate: Date = null,
+    public offsetDate: Date = null,
+    public minDate: Date = null,
+    public maxDate: Date = null,
+    public isSundayFirst = false,
+    public isWeekendDisabled = false,
+  ) {}
+}
+
+const enum DateEquality {
+  Day = 0,
+  Month = 1,
+  Year = 2,
 }
 
 function getStartOfMonth(now: Date): Date {
@@ -32,12 +52,6 @@ function getDayOffset(date: Date, isSundayFirst: boolean = false): number {
   return result;
 }
 
-const enum DateEquality {
-  Day = 0,
-  Month = 1,
-  Year = 2,
-}
-
 function isEqualDate(date1: Date, date2: Date, eqType:DateEquality = DateEquality.Day): boolean {
   if (date1.getFullYear() !== date2.getFullYear()) return false;
   if (eqType === DateEquality.Year) return true;
@@ -58,19 +72,20 @@ export function getOffsetDate(date: Date, days: number, months: number, years: n
   return result;
 }
 
-export function getMonthCalendar(today: Date, selectedDate: Date, offsetDate: Date, minDate: Date, maxDate: Date, isSundayFirst = false): CalendarDay[] {
-  const min = minDate.getTime();
-  const max = maxDate.getTime();
+export function getMonthCalendar(cfg = new CalendarConfig()): CalendarDay[] {
+  const min = cfg.minDate.getTime();
+  const max = cfg.maxDate.getTime();
 
   const result: CalendarDay[] = [];
-  const position = getStartOfMonth(offsetDate);
-  const offset = getDayOffset(position, isSundayFirst);
+  const position = getStartOfMonth(cfg.offsetDate);
+  const offset = getDayOffset(position, cfg.isSundayFirst);
 
   position.setDate(-offset + 1);
 
   for (let i = 0; i < 42; i++) {
     const dt = new Date(position)
     const dtMills = dt.getTime();
+    const dtDay = dt.getDay();
     const dtDate = dt.getDate();
     const dtMonth = dt.getMonth();
 
@@ -78,10 +93,14 @@ export function getMonthCalendar(today: Date, selectedDate: Date, offsetDate: Da
       date: dtDate,
       month: dtMonth.toString(), //TODO
       rawDate: dt,
-      isToday: isEqualDate(dt, today),
-      isSelected: selectedDate && isEqualDate(dt, selectedDate),
-      isActiveMonth: isEqualDate(dt, offsetDate, DateEquality.Month),
-      isDisabled: dtMills < min || dtMills > max
+      isToday: isEqualDate(dt, cfg.today),
+      isSelected: cfg.selectedDate && isEqualDate(dt, cfg.selectedDate),
+      isActiveMonth: isEqualDate(dt, cfg.offsetDate, DateEquality.Month),
+      isDisabled: dtMills < min
+        || dtMills > max
+        || (cfg.isWeekendDisabled && (dtDay === 0 || dtDay === 6)),
+      isFirst: isEqualDate(dt, cfg.minDate),
+      isLast: isEqualDate(dt, cfg.maxDate),
     });
 
     position.setDate(position.getDate() + 1);

@@ -9,6 +9,7 @@
   import IcoMenuRight from 'pnk/paths/menu-right.svelte';
 
   import {
+    CalendarConfig,
     WeekdaysShort,
     MonthsFull,
     getMonthCalendar,
@@ -23,11 +24,15 @@
   export let maxDate;
   export let offsetDate;
   export let dataGroup;
+  export let isSundayFirst = false;
+  export let isWeekendDisabled = false;
 
-  $: calendar = getMonthCalendar(now, value, offsetDate, minDate, maxDate);
+  $: calendar = getMonthCalendar(new CalendarConfig(
+    now, value, offsetDate, minDate, maxDate, isSundayFirst, isWeekendDisabled
+  ));
 
-  $: isBackDisabled = calendar[0].isDisabled;
-  $: isForwardDisabled = calendar[calendar.length - 1].isDisabled;
+  $: isBackDisabled = calendar.some((i) => i.isFirst);
+  $: isForwardDisabled = calendar.some((i) => i.isLast);
 
   function onChange(day) {
     if (day.isActiveMonth && !day.isDisabled) {

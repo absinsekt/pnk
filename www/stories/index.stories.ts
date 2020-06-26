@@ -27,7 +27,7 @@ export const suggest = () => ({
 export const datePicker = () => ({
   Component: DatePicker,
   props: {
-    value: new Date()
+    value: new Date(),
   }
 })
 
