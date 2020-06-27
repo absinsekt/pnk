@@ -38,11 +38,7 @@
 
   if (isSet(store) && isSet(name)) {
     onDestroy(store.subscribe(v => form = v));
-    onMount(() => {
-      if (isSet(value)) {
-        onSelect(value);
-      }
-    });
+    onMount(() => onChange(value));
   }
 
   let isItemsVisible = false;
@@ -61,7 +57,7 @@
     if (group !== id) isItemsVisible = false;
   }
 
-  function onSelect(itm) {
+  function onChange(itm) {
     value = itm;
 
     if (isSet(store) && isSet(name)) {
@@ -123,7 +119,7 @@
       <div class="pnk-list-item"
         class:x2={size === 'md'}
         class:x3={size === 'lg'}
-        on:click|preventDefault|stopPropagation={onSelect(item)}>
+        on:click|preventDefault|stopPropagation={onChange(item)}>
 
         <a class:pnk-li-current={item.id === value.id} href="."
           class:x2={size === 'md'}

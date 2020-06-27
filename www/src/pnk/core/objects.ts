@@ -1,9 +1,9 @@
 export function isSet(src) {
-  return typeof src !== 'undefined' && src !== null;
+  return !isUnset(src);
 }
 
 export function isUnset(src) {
-  return typeof src === 'undefined' || src === null;
+  return typeof src === 'undefined' || src === null || src === '';
 }
 
 export function safeGet<T> (source, path, dflt = null): T {

@@ -39,7 +39,7 @@
 
   if (isSet(store) && isSet(name)) {
     onDestroy(store.subscribe(v => form = v));
-    onMount(() => validate(value));
+    onMount(() => onChange(value));
   }
 
   let items = [];
@@ -69,7 +69,7 @@
     if (group !== id) isItemsVisible = false;
   }
 
-  function onSelect(itm) {
+  function onChange(itm) {
     value = itm.label;
     isSelected = true;
 
@@ -119,7 +119,7 @@
       <div class="pnk-list-item"
         class:x2={size === 'md'}
         class:x3={size === 'lg'}
-        on:click|preventDefault|stopPropagation={onSelect(item)}>
+        on:click|preventDefault|stopPropagation={onChange(item)}>
 
         <a href="."
           class:x2={size === 'md'}

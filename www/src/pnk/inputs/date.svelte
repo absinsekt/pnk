@@ -53,11 +53,7 @@
 
   if (isSet(store) && isSet(name)) {
     onDestroy(store.subscribe(v => form = v));
-    onMount(() => {
-      if (isSet(value)) {
-        onChange(value);
-      }
-    });
+    onMount(() => onChange(value));
   }
 
   onMount(() => {
@@ -76,8 +72,8 @@
     value = itm;
 
     if (isSet(store) && isSet(name)) {
-      updateFieldValue(store, name, itm.value);
-      validate(itm.value);
+      updateFieldValue(store, name, value);
+      validate(value);
     }
 
     isPickerVisible = false;

@@ -3,6 +3,13 @@
 @import 'pnk/styles/container'
 @import 'pnk/styles/error'
 
+.pnk-container
+  &.x2
+    border-width: $theme-wgt-border-size
+
+  &.x3
+    border-width: $theme-wgt-border-size * 2
+
 pl-holder()
   font-weight: 400 !important
   font-style: italic !important
@@ -40,10 +47,3 @@ pl-holder()
     height: unit($theme-wgt-size-step * 1.875, 'rem')
     padding: unit($theme-wgt-size-step / 2, 'rem')
     font-size: unit($theme-wgt-size-step / 2, 'rem')
-
-.pnk-container
-  &.x2
-    border-width: $theme-wgt-border-size
-
-  &.x3
-    border-width: $theme-wgt-border-size * 2

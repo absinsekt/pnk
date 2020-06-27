@@ -1,3 +1,5 @@
+import { isUnset } from "pnk/core/objects";
+
 export function validName(errorMessage: string) {
   return function(value: string): string {
     const re = /[a-zа-я]{2,}/i;
@@ -20,7 +22,7 @@ export function validPhone(errorMessage: string) {
 }
 
 export function required(errorMessage: string) {
-  return function(value: string): string {
-    return value === '' ? errorMessage : null;
+  return function(value: string|number|Date): string {
+    return isUnset(value) ? errorMessage : null;
   }
 }

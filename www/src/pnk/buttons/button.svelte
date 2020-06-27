@@ -30,7 +30,7 @@
   data-group={dataGroup}
   {disabled}
 
-  on:click
+  on:click|preventDefault|stopPropagation
 >
 
   {#if icon !== null}
