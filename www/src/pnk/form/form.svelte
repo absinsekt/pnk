@@ -1,20 +1,22 @@
 <style src="./form.styl"></style>
 
 <script>
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onDestroy, createEventDispatcher } from 'svelte';
   import { updateForm, sendForm } from './form';
   import { isUnset } from 'pnk/core/objects';
 
   const dispatch = createEventDispatcher();
 
+  // store
   export let store;
   if (isUnset(store)) throw new Error("Required param (store) is missing!");
 
+  // data
   export let data;
+  // token
   export let token;
 
   let thisForm;
-  const thisForm_unsubscribe = store.subscribe(m => thisForm = m);
 
   async function submit(e) {
     updateForm(store, 'isTouched', true);
@@ -25,7 +27,7 @@
     }
   }
 
-  onDestroy(thisForm_unsubscribe);
+  onDestroy(store.subscribe((m) => thisForm = m));
 </script>
 
 <div class="pnk-wgt">

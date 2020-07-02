@@ -1,17 +1,17 @@
-package controllers
+package lib
 
 import (
 	"strings"
 
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/configuration"
 	"github.com/absinsekt/pnk/controllers/admin"
 	"github.com/absinsekt/pnk/controllers/api"
-	"github.com/absinsekt/pnk/controllers/middlewares"
 	"github.com/absinsekt/pnk/controllers/paths"
 	"github.com/absinsekt/pnk/controllers/www"
-	"github.com/absinsekt/pnk/lib"
+	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/core"
+	"github.com/absinsekt/pnk/lib/middlewares"
 	"github.com/absinsekt/pnk/lib/responses"
 	"github.com/absinsekt/pnk/lib/templateset"
 )
@@ -19,7 +19,7 @@ import (
 // NewRouter creates root loader and mounts subrouters
 func NewRouter() func(*fasthttp.RequestCtx) {
 	templateSet, err := templateset.NewTemplateSet(configuration.TemplatePath)
-	lib.Check(err, true)
+	core.Check(err, true)
 
 	if configuration.Debug {
 		return buildDevRootHandler(templateSet)

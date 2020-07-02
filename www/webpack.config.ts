@@ -45,7 +45,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
 
     devServer: {
       contentBase: 'dist',
-      public: '127.0.0.1',
+      public: '127.0.0.1:5001',
       port: 5001,
       disableHostCheck: true,
       hot: false

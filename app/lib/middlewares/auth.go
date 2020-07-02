@@ -3,8 +3,8 @@ package middlewares
 import (
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/configuration"
-	"github.com/absinsekt/pnk/controllers/middlewares/csrf"
+	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/middlewares/csrf"
 	"github.com/absinsekt/pnk/lib/responses"
 )
 

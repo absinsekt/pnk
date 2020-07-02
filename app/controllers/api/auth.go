@@ -8,8 +8,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/configuration"
-	"github.com/absinsekt/pnk/controllers/middlewares"
+	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/middlewares"
 	"github.com/absinsekt/pnk/lib/responses"
 	"github.com/absinsekt/pnk/models/user"
 )

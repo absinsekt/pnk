@@ -1,12 +1,11 @@
 package models
 
 import (
-	"github.com/absinsekt/pnk/lib"
-	"github.com/absinsekt/pnk/lib/core"
-
-	"github.com/absinsekt/pnk/configuration"
 	"github.com/go-pg/pg/v9"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/core"
 )
 
 // DB main database connection
@@ -29,5 +28,5 @@ func CheckConnection() {
 	log.Info("Checking DB connection")
 
 	_, err := DB.ExecOne("SELECT 1")
-	lib.Check(err, true)
+	core.Check(err, true)
 }

@@ -3,9 +3,9 @@ package www
 import (
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/controllers/middlewares"
-	"github.com/absinsekt/pnk/controllers/middlewares/csrf"
 	"github.com/absinsekt/pnk/controllers/paths"
+	"github.com/absinsekt/pnk/lib/middlewares"
+	"github.com/absinsekt/pnk/lib/middlewares/csrf"
 	"github.com/absinsekt/pnk/lib/responses"
 	"github.com/absinsekt/pnk/lib/templateset"
 )

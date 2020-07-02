@@ -50,20 +50,18 @@
 
   let mode = 0;
   let offsetDate = new Date(now);
-  // let stringValue = '';
+  let stringValue = '';
 
   if (isSet(store) && isSet(name)) {
     onDestroy(store.subscribe((v) => {
       form = v;
 
       value = form.fields[name].value;
-      // stringValue = getStringValue(value);
+      stringValue = getStringValue(value);
     }));
 
     onMount(() => onChange(value));
   }
-
-  $: stringValue = getStringValue(value);
 
   onMount(() => {
     window.addEventListener('click', onBlur, true);

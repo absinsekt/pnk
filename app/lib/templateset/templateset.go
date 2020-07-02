@@ -12,7 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/configuration"
+	"github.com/absinsekt/pnk/lib/configuration"
 )
 
 const (

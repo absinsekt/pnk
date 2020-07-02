@@ -7,8 +7,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/configuration"
-	"github.com/absinsekt/pnk/controllers"
+	"github.com/absinsekt/pnk/lib"
+	"github.com/absinsekt/pnk/lib/configuration"
 	"github.com/absinsekt/pnk/models"
 )
 
@@ -23,7 +23,7 @@ func main() {
 
 	srv := &fasthttp.Server{
 		Name:              "pnk",
-		Handler:           controllers.NewRouter(),
+		Handler:           lib.NewRouter(),
 		ReadTimeout:       15 * time.Second,
 		WriteTimeout:      15 * time.Second,
 		ReduceMemoryUsage: true,

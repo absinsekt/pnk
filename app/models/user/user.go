@@ -6,7 +6,7 @@ import (
 	"github.com/go-pg/pg/v9"
 	"github.com/go-pg/pg/v9/orm"
 
-	"github.com/absinsekt/pnk/configuration"
+	"github.com/absinsekt/pnk/lib/configuration"
 	"github.com/absinsekt/pnk/lib/core"
 	"github.com/absinsekt/pnk/lib/crypto"
 	"github.com/absinsekt/pnk/lib/strings"

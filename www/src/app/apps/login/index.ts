@@ -3,6 +3,7 @@ import { FormValue } from 'pnk/form/types';
 import App from './app.svelte';
 
 export type LoginFormStore = {
+  action: string;
   isTouched: boolean;
   isValid: boolean;
   fields: {
@@ -16,7 +17,13 @@ export class LoginApp {
   public static store: Writable<LoginFormStore>;
 
   public static init(target: HTMLElement) {
+    LoginApp.resetStore();
+    LoginApp.app = new App({target});
+  }
+
+  public static resetStore() {
     LoginApp.store = writable({
+      action: '/api/auth/',
       isTouched: false,
       isValid: true,
       fields: {
@@ -24,8 +31,6 @@ export class LoginApp {
         password: { value: '', isValid: true, error: null },
       }
     });
-
-    LoginApp.app = new App({target});
   }
 
   public static openAdmin() {

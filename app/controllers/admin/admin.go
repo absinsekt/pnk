@@ -3,8 +3,8 @@ package admin
 import (
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/controllers/middlewares"
 	"github.com/absinsekt/pnk/controllers/paths"
+	"github.com/absinsekt/pnk/lib/middlewares"
 	"github.com/absinsekt/pnk/lib/responses"
 )
 

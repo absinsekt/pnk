@@ -6,10 +6,11 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/absinsekt/pnk/configuration"
+	"github.com/valyala/fasthttp"
+
+	"github.com/absinsekt/pnk/lib/configuration"
 	"github.com/absinsekt/pnk/lib/responses"
 	"github.com/absinsekt/pnk/lib/strings"
-	"github.com/valyala/fasthttp"
 )
 
 const (

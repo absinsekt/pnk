@@ -3,7 +3,7 @@ package responses
 import (
 	"time"
 
-	cfg "github.com/absinsekt/pnk/configuration"
+	cfg "github.com/absinsekt/pnk/lib/configuration"
 	"github.com/valyala/fasthttp"
 )
 
