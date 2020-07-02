@@ -9,12 +9,15 @@
   import IcoMenuRight from 'pnk/paths/menu-right.svelte';
 
   import {
-    CalendarConfig,
     WeekdaysShort,
     MonthsFull,
-    getMonthCalendar,
     getOffsetDate,
-  } from '../../date';
+  } from 'pnk/core/date';
+
+  import {
+    CalendarConfig,
+    getMonthCalendar,
+  } from '../../date-picker';
 
   const dispatch = createEventDispatcher();
 
@@ -31,8 +34,8 @@
     now, value, offsetDate, minDate, maxDate, isSundayFirst, isWeekendDisabled
   ));
 
-  $: isBackDisabled = calendar.some((i) => i.isFirst);
-  $: isForwardDisabled = calendar.some((i) => i.isLast);
+  $: isBackDisabled = calendar.some((i) => i.isActiveMonth && i.isFirst);
+  $: isForwardDisabled = calendar.some((i) => i.isActiveMonth &&i.isLast);
 
   function onChange(day) {
     if (day.isActiveMonth && !day.isDisabled) {

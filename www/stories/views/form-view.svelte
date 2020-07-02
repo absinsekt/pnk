@@ -3,6 +3,7 @@
   import Inline from 'pnk/inputs/inline.svelte';
   import Suggest from 'pnk/lists/suggest.svelte';
   import Dropdown from 'pnk/lists/dropdown.svelte';
+  import DatePicker from 'pnk/inputs/date-picker.svelte';
   import Submit from 'pnk/buttons/submit.svelte';
 
   import { validName, required } from 'pnk/validators/validators';
@@ -18,6 +19,14 @@
     placeholder="Иван"
     validators={[
       validName('Введите Имя'),
+    ]}
+  />
+
+  <DatePicker label="Date"
+    name="date"
+    store={form}
+    validators={[
+      required('Введите дату доставки'),
     ]}
   />
 

@@ -10,7 +10,6 @@
   export let store;
   if (isUnset(store)) throw new Error("Required param (store) is missing!");
 
-  export let action = '.';
   export let data;
   export let token;
 
@@ -25,8 +24,6 @@
       dispatch(result.status, result);
     }
   }
-
-  onMount(() => updateForm(store, 'action', action));
 
   onDestroy(thisForm_unsubscribe);
 </script>

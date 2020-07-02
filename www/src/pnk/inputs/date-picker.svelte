@@ -1,4 +1,4 @@
-<style src="./date/date.styl"></style>
+<style src="./date-picker/date-picker.styl"></style>
 
 <script>
   import { onMount, onDestroy } from 'svelte';
@@ -6,16 +6,16 @@
 
   import { ID, pad } from 'pnk/core/numbers';
   import { getWgtGroup } from 'pnk/core/dom';
+  import { getOffsetDate } from 'pnk/core/date';
   import { isSet } from 'pnk/core/objects';
   import { updateFieldValue } from 'pnk/form/form';
   import { buildValidate } from 'pnk/validators';
 
-  import Days from './date/components/days/days.svelte';
-  import { getOffsetDate } from './date/date';
+  import Days from './date-picker/components/days/days.svelte';
   import Icon from 'pnk/icon/icon.svelte';
   import IcoCalendarMonth from 'pnk/paths/calendar-month.svelte';
 
-  const id = `date-${ID(8)}`;
+  const id = `date-picker-${ID(8)}`;
 
   // store binding
   export let store;
@@ -50,11 +50,20 @@
 
   let mode = 0;
   let offsetDate = new Date(now);
+  // let stringValue = '';
 
   if (isSet(store) && isSet(name)) {
-    onDestroy(store.subscribe(v => form = v));
+    onDestroy(store.subscribe((v) => {
+      form = v;
+
+      value = form.fields[name].value;
+      // stringValue = getStringValue(value);
+    }));
+
     onMount(() => onChange(value));
   }
+
+  $: stringValue = getStringValue(value);
 
   onMount(() => {
     window.addEventListener('click', onBlur, true);
@@ -87,11 +96,11 @@
     }
   }
 
-  $: getValue = () => {
-    if (value !== null) {
-      const YYYY = value.getFullYear();
-      const MM = pad(value.getMonth() + 1, 2);
-      const DD = pad(value.getDate(), 2);
+  function getStringValue(v) {
+    if (v !== null) {
+      const YYYY = v.getFullYear();
+      const MM = pad(v.getMonth() + 1, 2);
+      const DD = pad(v.getDate(), 2);
 
       return `${DD}.${MM}.${YYYY}`;
     }
@@ -121,7 +130,7 @@
       class:x3={size === 'lg'}
 
       readonly={true}
-      value={getValue()}
+      value={stringValue}
 
       on:click|preventDefault|stopPropagation={toggle}
     />

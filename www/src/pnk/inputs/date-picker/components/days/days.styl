@@ -37,11 +37,12 @@ daybox()
 
     border-radius: unit($theme-wgt-size-step/6, 'rem')
     color: grey
-    cursor: pointer
+    cursor: default
     transition: $tran-x1 color, $tran-x1 background-color
 
     &.month
       color: black
+      cursor: pointer
 
       &:hover
         background-color: alpha(red, .5)

@@ -47,12 +47,7 @@
   let isItemsVisible = false;
 
   function debounce(e) {
-    if (value.length === 0) {
-      isSelected = false;
-    }
-
     if (value.length < minlength) return;
-    if (isSelected) return;
 
     clearTimeout(timerId);
     timerId = setTimeout(async() => {
@@ -71,7 +66,6 @@
 
   function onChange(itm) {
     value = itm.label;
-    isSelected = true;
 
     if (isSet(store) && isSet(name)) {
       updateFieldValue(store, name, value)

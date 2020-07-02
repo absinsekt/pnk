@@ -1,7 +1,7 @@
 import FormView from './views/form-view.svelte';
 
 import Button from 'pnk/buttons/button.svelte';
-import DatePicker from 'pnk/inputs/date.svelte';
+import DatePicker from 'pnk/inputs/date-picker.svelte';
 
 import Suggest from 'pnk/lists/suggest.svelte';
 import { dadataSuggest } from 'pnk/lists/suggest/providers/dadata';

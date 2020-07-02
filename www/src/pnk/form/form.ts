@@ -50,7 +50,7 @@ export const sendForm = (form, csrfToken, data): Promise<ApiResponse|ApiError> =
     headers,
     method: 'POST',
     mode: 'cors',
-  }).then((data) => data.json())
+  }).then((d) => d.json())
   .then((json) => json as ApiResponse)
   .catch((json) => json as ApiError);
 }
