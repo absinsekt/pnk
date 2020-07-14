@@ -8,6 +8,10 @@ import { dadataSuggest } from 'pnk/lists/suggest/providers/dadata';
 
 import IcoCalendar from 'pnk/paths/calendar.svelte';
 
+import SwitchButton from 'pnk/buttons/switch-button.svelte';
+import IcoMenu from 'pnk/paths/menu.svelte';
+import IcoClose from 'pnk/paths/close.svelte';
+
 export default {
   title: 'Form',
 };
@@ -22,14 +26,14 @@ export const suggest = () => ({
     suggest: dadataSuggest,
     min: 5
   }
-})
+});
 
 export const datePicker = () => ({
   Component: DatePicker,
   props: {
     value: new Date(),
   }
-})
+});
 
 export const button = () => ({
   Component: Button,
@@ -37,4 +41,11 @@ export const button = () => ({
     size: 'sm',
     icon: IcoCalendar
   }
-})
+});
+
+export const buttons = () => ({
+  Component: SwitchButton,
+  props: {
+    icons: [IcoMenu, IcoClose]
+  }
+});
