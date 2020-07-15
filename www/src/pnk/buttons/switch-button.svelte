@@ -1,6 +1,8 @@
 <style src="./switch-button/switch-button.styl"></style>
 
 <script>
+  import { createEventDispatcher } from 'svelte';
+
   import Icon from 'pnk/icon/icon.svelte';
 
   import { spin } from './switch-button/switch-button';
@@ -19,6 +21,8 @@
   export let block = false;
   // disabled
   export let disabled = false;
+
+  const dispatch = createEventDispatcher();
 </script>
 
 <button
@@ -34,7 +38,10 @@
   data-group={dataGroup}
   {disabled}
 
-  on:click|preventDefault|stopPropagation
+  on:click|preventDefault|stopPropagation={() => {
+    index = index < icons.length-1 ? index+1 : 0;
+    dispatch('change', index);
+  }}
 >
 
   <div class="icons">
@@ -43,7 +50,6 @@
     <div
       class="icon"
       transition:spin={{idx}}
-      on:click={() => { index = index < icons.length-1 ? index+1 : 0 }}
     >
       <Icon {size} src={icon} />
     </div>

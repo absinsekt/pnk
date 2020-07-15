@@ -1,6 +1,5 @@
 import { linear } from 'svelte/easing';
 
-
 export function spin(node, { idx, duration }) {
   return {
     duration,
