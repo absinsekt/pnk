@@ -1,7 +1,7 @@
 <style src="./button/button.styl"></style>
 
 <script>
-  import Icon from 'pnk/icon/icon.svelte';
+  import Icon from 'pnk/icons/icon.svelte';
 
   // dataGroup
   export let dataGroup;
@@ -21,7 +21,7 @@
   class="pnk-button"
   class:block={block}
 
-  class:ico={icon !== null}
+  class:ico={icon !== null || label === ''}
 
   class:x1={size === 'sm'}
   class:x2={size === 'md'}
@@ -37,5 +37,5 @@
   <Icon {size} src={icon} />
   {/if}
 
-  {label}
+  <slot>{label}</slot>
 </button>

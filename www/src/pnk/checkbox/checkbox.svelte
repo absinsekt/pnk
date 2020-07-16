@@ -8,7 +8,7 @@
   import { updateFieldValue } from 'pnk/form/form';
   import { buildValidate } from 'pnk/validators';
 
-  import Icon from 'pnk/icon/icon.svelte';
+  import Icon from 'pnk/icons/icon.svelte';
   import IcoCheck from 'pnk/paths/check.svelte';
 
   const id = `input-${ID(8)}`;

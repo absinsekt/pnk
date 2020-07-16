@@ -8,7 +8,7 @@
   import { updateFieldValue } from 'pnk/form/form';
   import { buildValidate } from 'pnk/validators';
 
-  import Icon from 'pnk/icon/icon.svelte';
+  import Icon from 'pnk/icons/icon.svelte';
   import IcoChevronDown from 'pnk/paths/chevron-down.svelte';
   import IcoChevronDownBox from 'pnk/paths/chevron-down-box.svelte';
 

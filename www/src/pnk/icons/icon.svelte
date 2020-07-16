@@ -1,4 +1,4 @@
-<style src="./icon.styl"></style>
+<style src="./icon/icon.styl"></style>
 
 <script>
   // rotated

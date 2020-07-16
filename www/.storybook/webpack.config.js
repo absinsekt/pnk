@@ -10,14 +10,14 @@ const {
 } = require('../build-tools');
 
 const SRC_PATH = path.join(__dirname, '../src');
-const STORIES_PATH = path.join(__dirname, '../stories');
+//const STORIES_PATH = path.join(__dirname, '../stories');
 
 module.exports = ({config}) => {
   printEnvVariables();
 
   config.module.rules.push({
     test: /\.[jt]s$/,
-    include: [SRC_PATH, STORIES_PATH],
+    include: [SRC_PATH],
     use: [
       {
         loader: require.resolve('ts-loader')

@@ -12,7 +12,7 @@
   import { buildValidate } from 'pnk/validators';
 
   import Days from './date-picker/components/days/days.svelte';
-  import Icon from 'pnk/icon/icon.svelte';
+  import Icon from 'pnk/icons/icon.svelte';
   import IcoCalendarMonth from 'pnk/paths/calendar-month.svelte';
 
   const id = `date-picker-${ID(8)}`;

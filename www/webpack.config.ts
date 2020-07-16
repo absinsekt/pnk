@@ -101,11 +101,6 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
             context: path.join(__dirname, 'src/')
           }
         }
-      }, {
-        test: /\.font\.js$/,
-        use: isProduction ?
-          ProdLoaders.fontLoaders :
-          DevLoaders.fontLoaders
       }]
     },
 

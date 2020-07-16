@@ -16,16 +16,5 @@ export const ProdLoaders = {
       options: { plugins: [ autoprefixer(), cssnano() ] }
     },
     'stylus-loader'
-  ],
-
-  fontLoaders: [
-    MiniCssExtractPlugin.loader,
-    'css-loader',
-    {
-      loader: 'webfonts-loader',
-      options: {
-        embed: true
-      }
-    }
   ]
 };

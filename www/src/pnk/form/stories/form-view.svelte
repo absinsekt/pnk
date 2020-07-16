@@ -9,7 +9,7 @@
   import { validName, required } from 'pnk/validators/validators';
   import { dadataSuggest, validApt } from 'pnk/lists/suggest/providers/dadata';
 
-  import { form } from './store';
+  import { form } from './form-view-store';
 </script>
 
 <Form store={form}>

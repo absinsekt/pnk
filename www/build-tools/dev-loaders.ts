@@ -17,14 +17,5 @@ export const DevLoaders = {
       options: { sourceMap: true, plugins: [ autoprefixer(), cssnano() ] }
     },
     'stylus-loader'
-  ],
-
-  fontLoaders: [
-    'style-loader',
-    'css-loader',
-    {
-      loader: 'webfonts-loader',
-      options: { embed: true }
-    }
   ]
 };
