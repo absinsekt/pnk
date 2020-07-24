@@ -3,7 +3,10 @@ export function isSet(src) {
 }
 
 export function isUnset(src) {
-  return typeof src === 'undefined' || src === null || src === '';
+  return typeof src === 'undefined'
+    || Array.isArray(src) && src.length === 0
+    || src === null
+    || src === '';
 }
 
 export function safeGet<T> (source, path, dflt = null): T {

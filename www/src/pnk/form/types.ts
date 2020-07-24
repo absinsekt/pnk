@@ -11,16 +11,23 @@ export type FormValue<T = string> = {
   error: string;
 }
 
+export const enum Status {
+  Success = 'success',
+  Error = 'error',
+}
+
 export type ApiResponse = {
-  status: 'success';
+  status: Status;
+}
+
+export type ApiSuccess<T= any> = ApiResponse & {
   data: {
-    items: [];
+    items: T[];
     count: number;
     offset: number;
   };
 }
 
-export type ApiError = {
-  status: 'error';
+export type ApiError = ApiResponse & {
   message: string;
 }
