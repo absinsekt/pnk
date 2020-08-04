@@ -11,10 +11,17 @@
   background-color: $clr2
   transition: $tran-x1 color, $tran-x1 background-color
 
+  :global(.pnk-spinner-bars > div)
+    background-color: $clr0-ll
+    transition: $tran-x1 background-color
+
   &:hover
     color: $clr0-d
     border: 2px solid $clr2
     background-color: $clr0-ll
+
+    :global(.pnk-spinner-bars > div)
+      background-color: $clr0-d
 
   &:disabled
     cursor: unset
@@ -28,17 +35,20 @@
     width: 100%
 
   &.x1
-    height: unit($theme-wgt-size-step * 1, 'rem')
+    min-width: unit($theme-wgt-size-step * 3, 'rem')
+    height: 'calc(%s + 4px)' % unit($theme-wgt-size-step * 1, 'rem')
     padding: unit($theme-wgt-size-step / 4, 'rem')
     font-size: unit($theme-wgt-size-step / 2, 'rem')
 
   &.x2
-    height: unit($theme-wgt-size-step * 1.5, 'rem')
+    min-width: unit($theme-wgt-size-step * 6, 'rem')
+    height: 'calc(%s + 4px)' % unit($theme-wgt-size-step * 1.5, 'rem')
     padding: unit($theme-wgt-size-step / 2, 'rem') unit($theme-wgt-size-step * 2, 'rem')
     font-size: unit($theme-wgt-size-step / 2, 'rem')
 
   &.x3
-    height: unit($theme-wgt-size-step * 2, 'rem')
+    min-width: unit($theme-wgt-size-step * 9, 'rem')
+    height: 'calc(%s + 4px)' % unit($theme-wgt-size-step * 2, 'rem')
     padding: unit($theme-wgt-size-step / 1.6, 'rem') unit($theme-wgt-size-step * 4, 'rem')
     font-size: unit($theme-wgt-size-step / 1.625, 'rem')
 

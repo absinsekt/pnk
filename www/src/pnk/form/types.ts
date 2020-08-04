@@ -3,6 +3,7 @@ export type Form = {
   fields: {[key: string]: FormValue<string|number|boolean>};
   isTouched: boolean;
   isValid: boolean;
+  isLoading: boolean;
 }
 
 export type FormValue<T = string> = {

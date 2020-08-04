@@ -2,6 +2,7 @@
 
 <script>
   import Icon from 'pnk/icons/icon.svelte';
+  import SpinnerBars from 'pnk/spinners/bars.svelte';
 
   // dataGroup
   export let dataGroup;
@@ -15,6 +16,8 @@
   export let block = false;
   // disabled
   export let disabled = false;
+  // loading
+  export let loading = false;
 </script>
 
 <button
@@ -33,9 +36,13 @@
   on:click|preventDefault|stopPropagation
 >
 
-  {#if icon !== null}
-  <Icon {size} src={icon} />
-  {/if}
+  {#if loading}
+    <SpinnerBars />
+  {:else}
+    {#if icon !== null}
+    <Icon {size} src={icon} />
+    {/if}
 
-  <slot>{label}</slot>
+    <slot>{label}</slot>
+  {/if}
 </button>
