@@ -54,3 +54,44 @@ export function safeSet(src, path, value) {
     offset = offset[level];
   }
 }
+
+export function assignTypeSafe<T>(cls, src): T {
+  const result = new cls();
+  const schema = new cls();
+
+  Object.assign(result, src);
+
+  for (const key in schema) {
+    if (schema.hasOwnProperty(key)) {
+      const value = schema[key];
+
+      if (isSet(result[key])) {
+        if (typeof value === 'string') {
+          result[key] = result[key].toString();
+        }
+
+        if (typeof value === 'number') {
+          if (typeof result[key] === 'string') {
+            if (result[key].indexOf('.') === -1) {
+              result[key] = parseInt(result[key], 10);
+            } else {
+              result[key] = parseFloat(result[key]);
+            }
+          }
+        }
+
+        if (typeof value === 'boolean') {
+          if (typeof result[key] === 'string') {
+            result[key] = result[key].toLowerCase() === 'false';
+          } else if (typeof result[key] === 'number') {
+            result[key] = result[key] === 0;
+          }
+        }
+      } else {
+        result[key] = null;
+      }
+    }
+  }
+
+  return result;
+}

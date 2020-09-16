@@ -16,5 +16,5 @@
       "dom"
     ]
   },
-  "include": ["./src", "./stories"]
+  "include": ["./src"]
 }
