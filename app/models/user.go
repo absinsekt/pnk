@@ -1,4 +1,4 @@
-package user
+package models
 
 import (
 	"time"
@@ -10,7 +10,6 @@ import (
 	"github.com/absinsekt/pnk/lib/core"
 	"github.com/absinsekt/pnk/lib/crypto"
 	"github.com/absinsekt/pnk/lib/strings"
-	"github.com/absinsekt/pnk/models"
 )
 
 // User type
@@ -57,7 +56,7 @@ func getActiveUser(username string) (*User, error) {
 	// NO CACHE (isActive, permissions)
 	user := new(User)
 
-	if err := models.DB.
+	if err := DB.
 		Model(user).
 		Where("username = ?", username).
 		Where("is_active = ?", true).
@@ -71,7 +70,7 @@ func getActiveUser(username string) (*User, error) {
 
 func updateLastLogin(user *User) error {
 	user.LastLogin = time.Now()
-	return models.DB.Update(user)
+	return DB.Update(user)
 }
 
 // CreateUser creates a new active user with a given password
@@ -99,14 +98,14 @@ func CreateUser(username, password, firstName, lastName, email string, isStaff, 
 		IsActive:    true,
 	}
 
-	return models.DB.Insert(user)
+	return DB.Insert(user)
 }
 
-func GetList() ([]User, error) {
+func GetUsers() ([]User, error) {
 	method := func() (interface{}, error) {
 		data := []User{}
 
-		err := models.DB.
+		err := DB.
 			Model(&data).
 			Where("is_active = ?", true).
 			Select()
@@ -129,14 +128,14 @@ func createUserTable() error {
 		err  error
 	)
 
-	if err = models.DB.CreateTable(user, &orm.CreateTableOptions{
+	if err = DB.CreateTable(user, &orm.CreateTableOptions{
 		IfNotExists:   true,
 		FKConstraints: true,
 	}); err != nil {
 		return err
 	}
 
-	_, err = models.DB.Exec(`CREATE INDEX auth_user_username_like
+	_, err = DB.Exec(`CREATE INDEX auth_user_username_like
 		ON public.auth_user USING btree
 		(username COLLATE pg_catalog."default" varchar_pattern_ops ASC NULLS LAST)
 		TABLESPACE pg_default;`)
@@ -147,7 +146,7 @@ func createUserTable() error {
 func dropUserTable() error {
 	var user = new(User)
 
-	return models.DB.DropTable(user, &orm.DropTableOptions{
+	return DB.DropTable(user, &orm.DropTableOptions{
 		Cascade:  true,
 		IfExists: true,
 	})

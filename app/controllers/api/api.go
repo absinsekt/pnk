@@ -8,13 +8,14 @@ import (
 	"github.com/absinsekt/pnk/controllers/api/users"
 	"github.com/absinsekt/pnk/controllers/paths"
 	"github.com/absinsekt/pnk/lib/middlewares"
+	"github.com/absinsekt/pnk/lib/middlewares/auth"
 	"github.com/absinsekt/pnk/lib/middlewares/csrf"
 	"github.com/absinsekt/pnk/lib/responses"
 )
 
 // Mount all subroutes
 func Mount(path string) fasthttp.RequestHandler {
-	mwAuth := middlewares.BuildAuth(true)
+	mwAuth := auth.BuildAuth(true)
 
 	if path == paths.PathAPIAuth {
 		return middlewares.Post(csrf.Protect(authHandler))

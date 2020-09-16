@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import * as path from 'path';
-import { autoPreprocess } from 'svelte-preprocess/dist/autoProcess';
+import { sveltePreprocess } from 'svelte-preprocess/dist/autoProcess';
 
 import {
   aliases,
@@ -70,7 +70,7 @@ const config: (env, argv) => webpack.Configuration = (env, argv) => {
           options: {
             emitCss: true,
             hotReload: false, //if true - Cannot read property '_debugName' of undefined
-            preprocess: [autoPreprocess({
+            preprocess: [sveltePreprocess({
               stylus: {
                 paths: [path.resolve(__dirname, 'src')]
               }

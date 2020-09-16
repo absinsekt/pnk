@@ -9,9 +9,9 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/absinsekt/pnk/lib/configuration"
-	"github.com/absinsekt/pnk/lib/middlewares"
+	"github.com/absinsekt/pnk/lib/middlewares/auth"
 	"github.com/absinsekt/pnk/lib/responses"
-	"github.com/absinsekt/pnk/models/user"
+	"github.com/absinsekt/pnk/models"
 )
 
 type credentials struct {
@@ -27,7 +27,7 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 	// try to authenticate user
-	usr, err := user.Auth(creds.Login, creds.Password)
+	usr, err := models.Auth(creds.Login, creds.Password)
 	if err != nil {
 		if err.Error() == pg.ErrNoRows.Error() {
 			ctx.SetStatusCode(fasthttp.StatusNotFound)
@@ -39,15 +39,15 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	sess := middlewares.SessionData{
+	sess := auth.SessionData{
 		UserID:         usr.ID,
 		IsActive:       usr.IsActive,
 		IsStaff:        usr.IsStaff,
 		SessionVersion: configuration.SessionVersion,
 	}
 
-	if encoded, err := configuration.SecureVault.Encode(middlewares.SessionNS, &sess); err == nil {
-		responses.SetRootCookie(ctx, middlewares.SessionNS, encoded, 12*time.Hour)
+	if encoded, err := configuration.SecureVault.Encode(auth.SessionNS, &sess); err == nil {
+		responses.SetRootCookie(ctx, auth.SessionNS, encoded, 12*time.Hour)
 	}
 
 	responses.SuccessJSON(ctx, fasthttp.StatusAccepted, sess, 1, 0)

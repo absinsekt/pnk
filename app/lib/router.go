@@ -11,7 +11,7 @@ import (
 	"github.com/absinsekt/pnk/controllers/www"
 	"github.com/absinsekt/pnk/lib/configuration"
 	"github.com/absinsekt/pnk/lib/core"
-	"github.com/absinsekt/pnk/lib/middlewares"
+	"github.com/absinsekt/pnk/lib/middlewares/auth"
 	"github.com/absinsekt/pnk/lib/responses"
 	"github.com/absinsekt/pnk/lib/templateset"
 )
@@ -31,7 +31,7 @@ func NewRouter() func(*fasthttp.RequestCtx) {
 func buildProductionRootHandler(templateSet *templateset.TemplateSet) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		path := string(ctx.Path())
-		mwAuth := middlewares.BuildAuth(true)
+		mwAuth := auth.BuildAuth(true)
 
 		ctx.SetUserValue(templateset.TemplateSetNS, templateSet)
 

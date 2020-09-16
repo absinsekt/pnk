@@ -1,4 +1,4 @@
-package middlewares
+package auth
 
 import (
 	"github.com/valyala/fasthttp"

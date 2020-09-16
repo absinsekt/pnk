@@ -1,5 +1,6 @@
-import * as autoprefixer from 'autoprefixer';
+import autoprefixer from 'autoprefixer';
 import * as cssnano from 'cssnano';
+
 import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 export const ProdLoaders = {
@@ -13,7 +14,15 @@ export const ProdLoaders = {
     'css-loader',
     {
       loader: 'postcss-loader',
-      options: { plugins: [ autoprefixer(), cssnano() ] }
+      options: {
+        postcssOptions: {
+          plugins: [
+            autoprefixer,
+            cssnano
+          ]
+        },
+        sourceMap: true
+      }
     },
     'stylus-loader'
   ]
