@@ -10,3 +10,16 @@ func Contains(vals []string, s string) bool {
 
 	return false
 }
+
+// Filter filters values in a slice
+func Filter(vals []string, s string) []string {
+	result := []string{}
+
+	for _, v := range vals {
+		if v != s {
+			result = append(result, v)
+		}
+	}
+
+	return result
+}

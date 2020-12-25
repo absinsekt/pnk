@@ -13,16 +13,17 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/core"
 )
 
-const (
-	TemplateSetNS = "templateSet"
-)
+// Templates main templateset
+var Templates *TemplateSet
 
-// TemplateSet proccessed templates container
-type TemplateSet struct {
-	templateDir   string
-	templateCache map[string]*template.Template
+func init() {
+	var err error
+
+	Templates, err = NewTemplateSet(configuration.TemplatePath)
+	core.Check(err, true)
 }
 
 // NewTemplateSet creates templateSet instance
@@ -76,6 +77,7 @@ func (t *TemplateSet) loadTemplates() error {
 	return nil
 }
 
+// Render todo
 func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data map[string]interface{}) {
 	timerStart := time.Now()
 

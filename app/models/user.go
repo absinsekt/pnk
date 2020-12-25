@@ -3,8 +3,8 @@ package models
 import (
 	"time"
 
-	"github.com/go-pg/pg/v9"
-	"github.com/go-pg/pg/v9/orm"
+	"github.com/go-pg/pg/v10"
+	"github.com/go-pg/pg/v10/orm"
 
 	"github.com/absinsekt/pnk/lib/configuration"
 	"github.com/absinsekt/pnk/lib/core"
@@ -70,7 +70,9 @@ func getActiveUser(username string) (*User, error) {
 
 func updateLastLogin(user *User) error {
 	user.LastLogin = time.Now()
-	return DB.Update(user)
+	_, err := DB.Model(user).Update()
+
+	return err
 }
 
 // CreateUser creates a new active user with a given password
@@ -98,9 +100,12 @@ func CreateUser(username, password, firstName, lastName, email string, isStaff, 
 		IsActive:    true,
 	}
 
-	return DB.Insert(user)
+	_, err := DB.Model(user).Insert()
+
+	return err
 }
 
+// GetUsers todo
 func GetUsers() ([]User, error) {
 	method := func() (interface{}, error) {
 		data := []User{}
@@ -128,7 +133,7 @@ func createUserTable() error {
 		err  error
 	)
 
-	if err = DB.CreateTable(user, &orm.CreateTableOptions{
+	if err = DB.Model(user).CreateTable(&orm.CreateTableOptions{
 		IfNotExists:   true,
 		FKConstraints: true,
 	}); err != nil {
@@ -146,7 +151,7 @@ func createUserTable() error {
 func dropUserTable() error {
 	var user = new(User)
 
-	return DB.DropTable(user, &orm.DropTableOptions{
+	return DB.Model(user).DropTable(&orm.DropTableOptions{
 		Cascade:  true,
 		IfExists: true,
 	})

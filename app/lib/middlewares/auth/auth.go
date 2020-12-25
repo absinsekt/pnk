@@ -6,6 +6,7 @@ import (
 	"github.com/absinsekt/pnk/lib/configuration"
 	"github.com/absinsekt/pnk/lib/middlewares/csrf"
 	"github.com/absinsekt/pnk/lib/responses"
+	"github.com/absinsekt/pnk/models"
 )
 
 const (
@@ -13,33 +14,25 @@ const (
 	SessionNS = "pnk_squat"
 )
 
-// SessionData holds info about current user
-type SessionData struct {
-	UserID         int64
-	IsActive       bool
-	IsStaff        bool
-	SessionVersion string
-}
-
 // BuildAuth factory for building middleware
 func BuildAuth(staffOnly bool) func(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 		return func(ctx *fasthttp.RequestCtx) {
 			cookie := string(ctx.Request.Header.Cookie(SessionNS))
-			session := SessionData{}
+			session := models.SessionData{}
 
 			if err := configuration.SecureVault.Decode(SessionNS, cookie, &session); err != nil {
-				deny(ctx)
+				ClearAuth(ctx)
 				return
 			}
 
 			if session.SessionVersion != configuration.SessionVersion {
-				deny(ctx)
+				ClearAuth(ctx)
 				return
 			}
 
 			if staffOnly && !session.IsStaff {
-				deny(ctx)
+				ClearAuth(ctx)
 				return
 			}
 
@@ -50,7 +43,8 @@ func BuildAuth(staffOnly bool) func(next fasthttp.RequestHandler) fasthttp.Reque
 	}
 }
 
-func deny(ctx *fasthttp.RequestCtx) {
+// ClearAuth clears session and auth cookies
+func ClearAuth(ctx *fasthttp.RequestCtx) {
 	ctx.SetUserValue(SessionNS, nil)
 	responses.ClearCookie(ctx, SessionNS)
 	responses.ClearCookie(ctx, csrf.TokenCookieName)

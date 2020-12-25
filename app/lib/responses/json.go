@@ -30,11 +30,9 @@ func writeJSON(ctx *fasthttp.RequestCtx, status int, data interface{}) error {
 		return err
 	}
 
-	ctx.Response.SetStatusCode(status)
-
-	if _, err := ctx.Response.BodyWriter().Write(raw); err != nil {
-		return err
-	}
+	ctx.SetStatusCode(status)
+	ctx.SetContentType("application/json")
+	ctx.Write(raw)
 
 	return nil
 }

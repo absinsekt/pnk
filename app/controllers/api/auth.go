@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/v10"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
@@ -26,6 +26,7 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
+
 	// try to authenticate user
 	usr, err := models.Auth(creds.Login, creds.Password)
 	if err != nil {
@@ -39,9 +40,10 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	sess := auth.SessionData{
-		UserID:         usr.ID,
-		IsActive:       usr.IsActive,
+	sess := models.SessionData{
+		ID:             usr.ID,
+		Username:       usr.Username,
+		Email:          usr.Email,
 		IsStaff:        usr.IsStaff,
 		SessionVersion: configuration.SessionVersion,
 	}
@@ -50,5 +52,10 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 		responses.SetRootCookie(ctx, auth.SessionNS, encoded, 12*time.Hour)
 	}
 
-	responses.SuccessJSON(ctx, fasthttp.StatusAccepted, sess, 1, 0)
+	responses.SuccessJSON(ctx, fasthttp.StatusAccepted, &sess, 1, 0)
+}
+
+func logoutHandler(ctx *fasthttp.RequestCtx) {
+	auth.ClearAuth(ctx)
+	ctx.Redirect("/", fasthttp.StatusFound)
 }

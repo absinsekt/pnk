@@ -1,28 +1,17 @@
 package api
 
 import (
-	"strings"
+	"github.com/fasthttp/router"
 
-	"github.com/valyala/fasthttp"
-
-	"github.com/absinsekt/pnk/controllers/api/users"
-	"github.com/absinsekt/pnk/controllers/paths"
-	"github.com/absinsekt/pnk/lib/middlewares"
-	"github.com/absinsekt/pnk/lib/middlewares/auth"
 	"github.com/absinsekt/pnk/lib/middlewares/csrf"
-	"github.com/absinsekt/pnk/lib/responses"
 )
 
 // Mount all subroutes
-func Mount(path string) fasthttp.RequestHandler {
-	mwAuth := auth.BuildAuth(true)
+func Mount(root *router.Router) {
+	group := root.Group("/api")
 
-	if path == paths.PathAPIAuth {
-		return middlewares.Post(csrf.Protect(authHandler))
+	group.POST("/auth/", csrf.Protect(authHandler))
+	group.GET("/logout/", csrf.Protect(logoutHandler))
 
-	} else if strings.HasPrefix(path, paths.PathAPIUsers) {
-		return mwAuth(users.Mount(strings.TrimPrefix(path, paths.PathAPIUsers)))
-	}
-
-	return responses.DummyResponseHandler
+	MountUsers(group)
 }

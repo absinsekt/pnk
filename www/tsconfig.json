@@ -14,7 +14,10 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "pnk": ["./src/pnk/"]
+    }
   },
-  "include": ["./src"]
+  "include": ["./src", "./build-tools"]
 }

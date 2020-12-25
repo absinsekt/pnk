@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/go-pg/pg/v9"
+	"github.com/go-pg/pg/v10"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/absinsekt/pnk/lib/configuration"
