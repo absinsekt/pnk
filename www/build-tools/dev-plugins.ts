@@ -18,7 +18,7 @@ export const DevPlugins = [
 
   new HtmlWebpackPlugin({
     template: 'src/index.html',
-    filename: '../../app/templates/_base.html'
+    filename: '../../templates/_base.html'
   }),
 
   new DefinePlugin(definedEnvVariables)
