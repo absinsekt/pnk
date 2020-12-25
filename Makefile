@@ -23,8 +23,7 @@ story:
 
 serve:
 	@$(ENV) \
-cd app; \
-reflex -r '\.go$\' -s -- sh -c 'go run pnk.go'
+reflex -r '\.go$\' -R 'www/*' -s -- sh -c 'go run pnk.go'
 
 
 build:
