@@ -78,7 +78,12 @@ func (t *TemplateSet) loadTemplates() error {
 }
 
 // Render todo
-func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data map[string]interface{}) {
+func (t *TemplateSet) Render(
+	ctx *fasthttp.RequestCtx,
+	templateName string,
+	data map[string]interface{},
+	funcs map[string]interface{},
+) {
 	timerStart := time.Now()
 
 	if configuration.Debug == true {
@@ -98,6 +103,7 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 	}
 
 	tmpl := found.Lookup(templateName)
+	tmpl.Funcs(funcs)
 
 	ctx.SetContentType("text/html")
 
