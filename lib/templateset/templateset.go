@@ -102,8 +102,9 @@ func (t *TemplateSet) Render(
 		return
 	}
 
-	tmpl := found.Lookup(templateName)
-	tmpl.Funcs(funcs)
+	tmpl := found.
+		Lookup(templateName).
+		Funcs(funcs)
 
 	ctx.SetContentType("text/html")
 
