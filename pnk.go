@@ -10,6 +10,10 @@ import (
 	"github.com/absinsekt/pnk/lib"
 	"github.com/absinsekt/pnk/lib/configuration"
 	"github.com/absinsekt/pnk/models"
+
+	"github.com/absinsekt/pnk/controllers/admin"
+	"github.com/absinsekt/pnk/controllers/api"
+	"github.com/absinsekt/pnk/controllers/www"
 )
 
 func main() {
@@ -21,9 +25,15 @@ func main() {
 
 	addr := fmt.Sprintf("%s:%d", configuration.HostAddress, configuration.Port)
 
+	router := lib.NewRouter([]lib.Mountable{
+		&admin.Routes{},
+		&www.Routes{},
+		&api.Routes{},
+	})
+
 	srv := &fasthttp.Server{
 		Name:              "pnk",
-		Handler:           lib.NewRouter(),
+		Handler:           router.Handler,
 		ReadTimeout:       15 * time.Second,
 		WriteTimeout:      15 * time.Second,
 		ReduceMemoryUsage: true,

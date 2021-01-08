@@ -4,24 +4,24 @@ import (
 	"fmt"
 
 	"github.com/fasthttp/router"
-	"github.com/valyala/fasthttp"
-
-	"github.com/absinsekt/pnk/controllers/admin"
-	"github.com/absinsekt/pnk/controllers/api"
-	"github.com/absinsekt/pnk/controllers/www"
 )
 
+// Mountable describes a routing group to be attached in the main pnk
+type Mountable interface {
+	Mount(*router.Router)
+}
+
 // NewRouter creates root loader and mounts subrouters
-func NewRouter() func(*fasthttp.RequestCtx) {
+func NewRouter(mountPoints []Mountable) *router.Router {
 	root := router.New()
 	root.RedirectTrailingSlash = true
 	root.RedirectFixedPath = false
 
-	admin.Mount(root)
-	www.Mount(root)
-	api.Mount(root)
+	for _, mnt := range mountPoints {
+		mnt.Mount(root)
+	}
 
 	fmt.Println(root.List())
 
-	return root.Handler
+	return root
 }
