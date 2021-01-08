@@ -19,5 +19,5 @@ func ErrorResponse(ctx *fasthttp.RequestCtx, status int) {
 	errorTemplate := fmt.Sprintf("errors_%d.html", status)
 
 	ctx.Response.SetStatusCode(status)
-	templateset.Templates.Render(ctx, errorTemplate, nil, nil)
+	templateset.Templates.Render(ctx, errorTemplate, nil)
 }
