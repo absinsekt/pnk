@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
 	"github.com/absinsekt/pnk/lib"
 	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/templateset"
 	"github.com/absinsekt/pnk/models"
 
 	"github.com/absinsekt/pnk/controllers/admin"
@@ -19,7 +20,7 @@ import (
 func main() {
 	initLogger()
 
-	logrus.Info("Pnk is starting")
+	log.Info("Pnk is starting")
 
 	models.CheckConnection()
 
@@ -31,6 +32,8 @@ func main() {
 		&api.Routes{},
 	})
 
+	templateset.InitTemplateSet()
+
 	srv := &fasthttp.Server{
 		Name:              "pnk",
 		Handler:           router.Handler,
@@ -39,17 +42,17 @@ func main() {
 		ReduceMemoryUsage: true,
 	}
 
-	logrus.Infof("Listening on http://%s/", addr)
-	logrus.Fatalln(srv.ListenAndServe(addr))
+	log.Infof("Listening on http://%s/", addr)
+	log.Fatalln(srv.ListenAndServe(addr))
 }
 
 func initLogger() {
-	logrus.SetFormatter(&logrus.TextFormatter{
+	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp:          true,
 		DisableLevelTruncation: true,
 	})
 
 	if configuration.Debug {
-		logrus.SetLevel(logrus.DebugLevel)
+		log.SetLevel(log.DebugLevel)
 	}
 }
