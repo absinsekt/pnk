@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"regexp"
-
 	"path/filepath"
 	"strings"
 	"time"
@@ -26,12 +24,8 @@ const (
 	sharedPathFolder = "shared"
 )
 
-var (
-	// Templates main templateset
-	Templates *TemplateSet
-
-	reTemplates = regexp.MustCompile(`{{\s*template\s*"([a-zA-Z./]+)"\s*\.*\s*}}`)
-)
+// Templates global templateset
+var Templates *TemplateSet
 
 // InitTemplateSet creates templateSet instance
 func InitTemplateSet() error {
@@ -40,11 +34,8 @@ func InitTemplateSet() error {
 		templateCache: map[string]*template.Template{},
 	}
 
-	Templates.ReloadTemplates()
-
-	if configuration.Debug {
-		log.Info(Templates)
-	}
+	Templates.ReloadTemplates(false)
+	log.Debug(Templates)
 
 	return nil
 }
@@ -54,7 +45,7 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 	timerStart := time.Now()
 
 	if configuration.Debug == true {
-		t.ReloadTemplates()
+		t.ReloadTemplates(true)
 	}
 
 	found := t.templateCache[templateName]
@@ -72,7 +63,7 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 	tmpl := found.Lookup(templateName)
 
 	ctx.SetContentType("text/html")
-	log.Info(tmpl)
+
 	if err := tmpl.Execute(ctx.Response.BodyWriter(), data); err != nil {
 		log.Error(err)
 	}
@@ -85,8 +76,10 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 }
 
 // ReloadTemplates reloads all templates from templateDir
-func (t *TemplateSet) ReloadTemplates() {
-	log.Info("Reloading templates")
+func (t *TemplateSet) ReloadTemplates(quiet bool) {
+	if !quiet {
+		log.Info("Reloading templates")
+	}
 
 	tmpl, shared := t.searchTemplates()
 
