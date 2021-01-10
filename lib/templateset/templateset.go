@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"os"
+	"path"
 	"regexp"
 
 	"path/filepath"
@@ -39,9 +40,7 @@ func InitTemplateSet() error {
 		templateCache: map[string]*template.Template{},
 	}
 
-	if err := Templates.loadTemplates(); err != nil {
-		return err
-	}
+	Templates.ReloadTemplates()
 
 	if configuration.Debug {
 		log.Info(Templates)
@@ -55,7 +54,7 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 	timerStart := time.Now()
 
 	if configuration.Debug == true {
-		t.Reload()
+		t.ReloadTemplates()
 	}
 
 	found := t.templateCache[templateName]
@@ -85,27 +84,31 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 	)
 }
 
-// Reload reloads all templates from templateDir
-func (t *TemplateSet) Reload() error {
-	return t.loadTemplates()
-}
-
-func (t *TemplateSet) loadTemplates() error {
-	var shared []string
-	var templates []string
-
+// ReloadTemplates reloads all templates from templateDir
+func (t *TemplateSet) ReloadTemplates() {
 	log.Info("Reloading templates")
 
+	tmpl, shared := t.searchTemplates()
+
+	if err := t.loadTemplates(tmpl, shared); err != nil {
+		log.Error(err)
+	}
+}
+
+// Walk through templateDir and index .html-templates
+// splitting them in two collections: ordinary templates and
+// shared templates which can be reused by ordinaries
+func (t *TemplateSet) searchTemplates() (templateFiles []string, sharedTemplateFiles []string) {
 	err := filepath.Walk(t.templateDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
 		if !info.IsDir() && strings.HasSuffix(info.Name(), ".html") {
-			if isSharedTemplate(path) {
-				shared = append(shared, path)
+			if !isSharedTemplate(path) {
+				templateFiles = append(templateFiles, path)
 			} else {
-				templates = append(templates, path)
+				sharedTemplateFiles = append(sharedTemplateFiles, path)
 			}
 		}
 
@@ -113,98 +116,71 @@ func (t *TemplateSet) loadTemplates() error {
 	})
 
 	if err != nil {
-		return err
+		log.Error(err)
 	}
 
-	for _, tmpl := range templates {
-		tmplName := buildTemplateName(tmpl)
-		grouped := append(shared, tmpl)
+	return
+}
 
-		log.Info(tmplName, grouped)
+// Iterate templateFiles, attach shared templates to each of them,
+// parse a final template group and append it to t's template cache
+func (t *TemplateSet) loadTemplates(templateFiles []string, sharedTemplateFiles []string) error {
+	for _, templateFile := range templateFiles {
+		var finalTemplate *template.Template
 
-		fullTemplate, err := template.
-			New(tmplName).
-			Parse(concatContent(grouped))
+		templateGroupFiles := append(sharedTemplateFiles, templateFile)
 
-		if err != nil {
-			log.Error(err)
-			return err
+		for _, file := range templateGroupFiles {
+			buf, err := ioutil.ReadFile(file)
+			if err != nil {
+				return err
+			}
+
+			templateContent := string(buf)
+			templateName := buildTemplateName(file)
+
+			if finalTemplate == nil {
+				finalTemplate = template.New(templateName)
+			}
+
+			if finalTemplate.Name() == templateName {
+				_, err = finalTemplate.Parse(string(templateContent))
+			} else {
+				_, err = finalTemplate.New(templateName).Parse(string(templateContent))
+			}
+
+			if err != nil {
+				return err
+			}
 		}
 
-		t.templateCache[tmplName] = fullTemplate
+		templateBundleName := buildTemplateName(templateFile)
+		t.templateCache[templateBundleName] = finalTemplate
 	}
 
 	return nil
 }
 
-func concatContent(files []string) string {
-	var (
-		buf      = map[string][]byte{}
-		result   = ""
-		lastName = ""
-	)
+func splitPath(templatePath string) (string, string) {
+	relPath, _ := filepath.Rel(configuration.TemplatePath, templatePath)
+	resultPath, templateName := filepath.Split(relPath)
+	resultPath = strings.TrimPrefix(resultPath, "..")
+	resultPath = strings.Trim(resultPath, string(os.PathSeparator))
 
-	for _, fileName := range files {
-		data, err := ioutil.ReadFile(fileName)
-
-		if err != nil {
-			return ""
-		}
-
-		lastName = buildTemplateName(fileName)
-		buf[lastName] = data
-	}
-
-	result = string(buf[lastName])
-
-	for {
-		found := reTemplates.FindStringSubmatch(result)
-
-		if len(found) == 0 {
-			break
-		}
-
-		result = strings.ReplaceAll(result, found[0], string(buf[found[1]]))
-	}
-
-	log.Info(result)
-
-	return result
+	return resultPath, templateName
 }
 
-func buildTemplateName(fullPath string) string {
-	var union = []string{}
-
-	pathLevels, fileName := splitPath(fullPath)
-	if pathLevels[0] == sharedPathFolder {
-		pathLevels = pathLevels[1:]
-	}
-
-	for _, pth := range pathLevels {
-		if pth != "" {
-			union = append(union, pth)
-		}
-	}
-
-	union = append(union, fileName)
-
-	return strings.Join(union, string(os.PathSeparator))
+func isSharedTemplate(templatePath string) bool {
+	pth, _ := splitPath(templatePath)
+	return strings.HasPrefix(pth, sharedPathFolder)
 }
 
-func splitPath(fullPath string) ([]string, string) {
-	relPath, _ := filepath.Rel(configuration.TemplatePath, fullPath)
-	pathOnly, fileName := filepath.Split(relPath)
-	pathLevels := strings.Split(pathOnly, string(os.PathSeparator))
+func buildTemplateName(templatePath string) string {
+	pth, templateName := splitPath(templatePath)
 
-	if pathLevels[0] == ".." {
-		pathLevels = pathLevels[1:]
+	if pth == "" || pth == sharedPathFolder {
+		return templateName
 	}
 
-	return pathLevels, fileName
-}
-
-func isSharedTemplate(fullPath string) bool {
-	pathLevels, _ := splitPath(fullPath)
-
-	return pathLevels[0] == sharedPathFolder
+	return path.Join(pth, templateName)
 }
