@@ -3,6 +3,7 @@ package templateset
 import (
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -13,66 +14,28 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/absinsekt/pnk/lib/configuration"
-	"github.com/absinsekt/pnk/lib/core"
 )
 
-// Templates main templateset
+/*
+ * TODO documentations of templates loader logic
+ */
+
+const (
+	sharedPathFolder = "shared"
+)
+
+// Templates global templateset
 var Templates *TemplateSet
 
-func init() {
-	var err error
-
-	Templates, err = NewTemplateSet(configuration.TemplatePath)
-	core.Check(err, true)
-}
-
-// NewTemplateSet creates templateSet instance
-func NewTemplateSet(templateDir string) (*TemplateSet, error) {
-	templateSet := &TemplateSet{
-		templateDir:   templateDir,
+// InitTemplateSet creates templateSet instance
+func InitTemplateSet() error {
+	Templates = &TemplateSet{
+		templateDir:   configuration.TemplatePath,
 		templateCache: map[string]*template.Template{},
 	}
 
-	if err := templateSet.loadTemplates(); err != nil {
-		return nil, err
-	}
-
-	return templateSet, nil
-}
-
-func (t *TemplateSet) loadTemplates() error {
-	var shared []string
-	var templates []string
-
-	log.Info("Reloading templates")
-
-	err := filepath.Walk(t.templateDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".html") {
-			if strings.HasPrefix(info.Name(), "_") {
-				shared = append(shared, path)
-			} else {
-				templates = append(templates, path)
-			}
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		return err
-	}
-
-	for _, tmpl := range templates {
-		tmplName := path.Base(tmpl)
-		grouped := append(shared, tmpl)
-
-		t.templateCache[tmplName] = template.New(tmplName)
-		t.templateCache[tmplName].ParseFiles(grouped...)
-	}
+	Templates.ReloadTemplates(false)
+	log.Debug(Templates)
 
 	return nil
 }
@@ -82,12 +45,12 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 	timerStart := time.Now()
 
 	if configuration.Debug == true {
-		t.Reload()
+		t.ReloadTemplates(true)
 	}
 
 	found := t.templateCache[templateName]
 	if found == nil {
-		msg := fmt.Sprintf("Template `%s` nor found", templateName)
+		msg := fmt.Sprintf("Template `%s` not found", templateName)
 		log.Debug(msg)
 
 		if configuration.Debug {
@@ -112,7 +75,105 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 	)
 }
 
-// Reload reloads all templates from templateDir
-func (t *TemplateSet) Reload() error {
-	return t.loadTemplates()
+// ReloadTemplates reloads all templates from templateDir
+func (t *TemplateSet) ReloadTemplates(quiet bool) {
+	if !quiet {
+		log.Info("Reloading templates")
+	}
+
+	tmpl, shared := t.searchTemplates()
+
+	if err := t.loadTemplates(tmpl, shared); err != nil {
+		log.Error(err)
+	}
+}
+
+// Walk through templateDir and index .html-templates
+// splitting them in two collections: ordinary templates and
+// shared templates which can be reused by ordinaries
+func (t *TemplateSet) searchTemplates() (templateFiles []string, sharedTemplateFiles []string) {
+	err := filepath.Walk(t.templateDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".html") {
+			if !isSharedTemplate(path) {
+				templateFiles = append(templateFiles, path)
+			} else {
+				sharedTemplateFiles = append(sharedTemplateFiles, path)
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		log.Error(err)
+	}
+
+	return
+}
+
+// Iterate templateFiles, attach shared templates to each of them,
+// parse a final template group and append it to t's template cache
+func (t *TemplateSet) loadTemplates(templateFiles []string, sharedTemplateFiles []string) error {
+	for _, templateFile := range templateFiles {
+		var finalTemplate *template.Template
+
+		templateGroupFiles := append(sharedTemplateFiles, templateFile)
+
+		for _, file := range templateGroupFiles {
+			buf, err := ioutil.ReadFile(file)
+			if err != nil {
+				return err
+			}
+
+			templateContent := string(buf)
+			templateName := buildTemplateName(file)
+
+			if finalTemplate == nil {
+				finalTemplate = template.New(templateName)
+			}
+
+			if finalTemplate.Name() == templateName {
+				_, err = finalTemplate.Parse(string(templateContent))
+			} else {
+				_, err = finalTemplate.New(templateName).Parse(string(templateContent))
+			}
+
+			if err != nil {
+				return err
+			}
+		}
+
+		templateBundleName := buildTemplateName(templateFile)
+		t.templateCache[templateBundleName] = finalTemplate
+	}
+
+	return nil
+}
+
+func splitPath(templatePath string) (string, string) {
+	relPath, _ := filepath.Rel(configuration.TemplatePath, templatePath)
+	resultPath, templateName := filepath.Split(relPath)
+	resultPath = strings.TrimPrefix(resultPath, "..")
+	resultPath = strings.Trim(resultPath, string(os.PathSeparator))
+
+	return resultPath, templateName
+}
+
+func isSharedTemplate(templatePath string) bool {
+	pth, _ := splitPath(templatePath)
+	return strings.HasPrefix(pth, sharedPathFolder)
+}
+
+func buildTemplateName(templatePath string) string {
+	pth, templateName := splitPath(templatePath)
+
+	if pth == "" || pth == sharedPathFolder {
+		return templateName
+	}
+
+	return path.Join(pth, templateName)
 }

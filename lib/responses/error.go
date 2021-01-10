@@ -16,7 +16,7 @@ func ErrorResponse(ctx *fasthttp.RequestCtx, status int) {
 		return
 	}
 
-	errorTemplate := fmt.Sprintf("errors_%d.html", status)
+	errorTemplate := fmt.Sprintf("errors/%d.html", status)
 
 	ctx.Response.SetStatusCode(status)
 	templateset.Templates.Render(ctx, errorTemplate, nil)
