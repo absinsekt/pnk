@@ -10,10 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/absinsekt/pnk/lib/core"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
-
-	"github.com/absinsekt/pnk/lib/configuration"
 )
 
 /*
@@ -30,7 +29,7 @@ var Templates *TemplateSet
 // InitTemplateSet creates templateSet instance
 func InitTemplateSet() error {
 	Templates = &TemplateSet{
-		templateDir:   configuration.TemplatePath,
+		templateDir:   core.Config.TemplatePath,
 		templateCache: map[string]*template.Template{},
 	}
 
@@ -44,7 +43,7 @@ func InitTemplateSet() error {
 func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data map[string]interface{}) {
 	timerStart := time.Now()
 
-	if configuration.Debug == true {
+	if core.Config.Debug == true {
 		t.ReloadTemplates(true)
 	}
 
@@ -53,7 +52,7 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 		msg := fmt.Sprintf("Template `%s` not found", templateName)
 		log.Debug(msg)
 
-		if configuration.Debug {
+		if core.Config.Debug {
 			ctx.WriteString(msg)
 		}
 
@@ -155,7 +154,7 @@ func (t *TemplateSet) loadTemplates(templateFiles []string, sharedTemplateFiles 
 }
 
 func splitPath(templatePath string) (string, string) {
-	relPath, _ := filepath.Rel(configuration.TemplatePath, templatePath)
+	relPath, _ := filepath.Rel(core.Config.TemplatePath, templatePath)
 	resultPath, templateName := filepath.Split(relPath)
 	resultPath = strings.TrimPrefix(resultPath, "..")
 	resultPath = strings.Trim(resultPath, string(os.PathSeparator))

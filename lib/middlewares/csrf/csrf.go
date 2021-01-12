@@ -8,7 +8,7 @@ import (
 
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/core"
 	"github.com/absinsekt/pnk/lib/responses"
 	"github.com/absinsekt/pnk/lib/strings"
 )
@@ -43,7 +43,7 @@ func Protect(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 			decoded := tokenCookie{}
 			cookie := ctx.Request.Header.Cookie(TokenCookieName)
 
-			err := configuration.SecureVault.Decode(TokenCookieName, string(cookie), &decoded)
+			err := core.Config.SecureVault.Decode(TokenCookieName, string(cookie), &decoded)
 			if err != nil || len(decoded.Token) != TokenLength {
 				deny(ctx)
 				return
@@ -110,14 +110,14 @@ func InjectToken(next fasthttp.RequestHandler) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		token := generateToken()
 
-		value, err := configuration.SecureVault.Encode(TokenCookieName, tokenCookie{
+		value, err := core.Config.SecureVault.Encode(TokenCookieName, tokenCookie{
 			Timestamp:      time.Now().Unix(),
-			SessionVersion: configuration.SessionVersion,
+			SessionVersion: core.Config.SessionVersion,
 			Token:          token,
 		})
 
 		if err == nil {
-			responses.SetRootCookie(ctx, TokenCookieName, value, configuration.SecondsRarely)
+			responses.SetRootCookie(ctx, TokenCookieName, value, core.Config.SecondsRarely)
 		}
 
 		ctx.SetUserValue(TokenCookieName, mask(token))

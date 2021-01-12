@@ -3,7 +3,7 @@ package auth
 import (
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/core"
 	"github.com/absinsekt/pnk/lib/middlewares/csrf"
 	"github.com/absinsekt/pnk/lib/responses"
 	"github.com/absinsekt/pnk/models"
@@ -21,12 +21,12 @@ func BuildAuth(staffOnly bool) func(next fasthttp.RequestHandler) fasthttp.Reque
 			cookie := string(ctx.Request.Header.Cookie(SessionNS))
 			session := models.SessionData{}
 
-			if err := configuration.SecureVault.Decode(SessionNS, cookie, &session); err != nil {
+			if err := core.Config.SecureVault.Decode(SessionNS, cookie, &session); err != nil {
 				ClearAuth(ctx)
 				return
 			}
 
-			if session.SessionVersion != configuration.SessionVersion {
+			if session.SessionVersion != core.Config.SessionVersion {
 				ClearAuth(ctx)
 				return
 			}

@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 
-	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/core"
 	"github.com/absinsekt/pnk/lib/middlewares/auth"
 	"github.com/absinsekt/pnk/lib/responses"
 	"github.com/absinsekt/pnk/models"
@@ -45,10 +45,10 @@ func authHandler(ctx *fasthttp.RequestCtx) {
 		Username:       usr.Username,
 		Email:          usr.Email,
 		IsStaff:        usr.IsStaff,
-		SessionVersion: configuration.SessionVersion,
+		SessionVersion: core.Config.SessionVersion,
 	}
 
-	if encoded, err := configuration.SecureVault.Encode(auth.SessionNS, &sess); err == nil {
+	if encoded, err := core.Config.SecureVault.Encode(auth.SessionNS, &sess); err == nil {
 		responses.SetRootCookie(ctx, auth.SessionNS, encoded, 12*time.Hour)
 	}
 

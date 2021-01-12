@@ -6,9 +6,9 @@ import (
 	"github.com/go-pg/pg/v10"
 	"github.com/go-pg/pg/v10/orm"
 
-	"github.com/absinsekt/pnk/lib/configuration"
 	"github.com/absinsekt/pnk/lib/core"
 	"github.com/absinsekt/pnk/lib/crypto"
+	"github.com/absinsekt/pnk/lib/db"
 	"github.com/absinsekt/pnk/lib/strings"
 )
 
@@ -56,7 +56,7 @@ func getActiveUser(username string) (*User, error) {
 	// NO CACHE (isActive, permissions)
 	user := new(User)
 
-	if err := DB.
+	if err := db.Pool.
 		Model(user).
 		Where("username = ?", username).
 		Where("is_active = ?", true).
@@ -70,7 +70,7 @@ func getActiveUser(username string) (*User, error) {
 
 func updateLastLogin(user *User) error {
 	user.LastLogin = time.Now()
-	_, err := DB.Model(user).Update()
+	_, err := db.Pool.Model(user).Update()
 
 	return err
 }
@@ -100,7 +100,7 @@ func CreateUser(username, password, firstName, lastName, email string, isStaff, 
 		IsActive:    true,
 	}
 
-	_, err := DB.Model(user).Insert()
+	_, err := db.Pool.Model(user).Insert()
 
 	return err
 }
@@ -110,7 +110,7 @@ func GetUsers() ([]User, error) {
 	method := func() (interface{}, error) {
 		data := []User{}
 
-		err := DB.
+		err := db.Pool.
 			Model(&data).
 			Where("is_active = ?", true).
 			Select()
@@ -118,7 +118,7 @@ func GetUsers() ([]User, error) {
 		return data, err
 	}
 
-	result, err := core.GetCached("user.GetList", configuration.SecondsFrequently, method)
+	result, err := core.GetCached("user.GetList", core.Config.SecondsFrequently, method)
 	if err != nil {
 		return nil, err
 	}
@@ -133,14 +133,14 @@ func createUserTable() error {
 		err  error
 	)
 
-	if err = DB.Model(user).CreateTable(&orm.CreateTableOptions{
+	if err = db.Pool.Model(user).CreateTable(&orm.CreateTableOptions{
 		IfNotExists:   true,
 		FKConstraints: true,
 	}); err != nil {
 		return err
 	}
 
-	_, err = DB.Exec(`CREATE INDEX auth_user_username_like
+	_, err = db.Pool.Exec(`CREATE INDEX auth_user_username_like
 		ON public.auth_user USING btree
 		(username COLLATE pg_catalog."default" varchar_pattern_ops ASC NULLS LAST)
 		TABLESPACE pg_default;`)
@@ -151,7 +151,7 @@ func createUserTable() error {
 func dropUserTable() error {
 	var user = new(User)
 
-	return DB.Model(user).DropTable(&orm.DropTableOptions{
+	return db.Pool.Model(user).DropTable(&orm.DropTableOptions{
 		Cascade:  true,
 		IfExists: true,
 	})

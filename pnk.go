@@ -8,9 +8,9 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/absinsekt/pnk/lib"
-	"github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/core"
+	"github.com/absinsekt/pnk/lib/db"
 	"github.com/absinsekt/pnk/lib/templateset"
-	"github.com/absinsekt/pnk/models"
 
 	"github.com/absinsekt/pnk/controllers/admin"
 	"github.com/absinsekt/pnk/controllers/api"
@@ -18,13 +18,14 @@ import (
 )
 
 func main() {
-	initLogger()
+	core.InitConfiguration(nil)
 
+	initLogger()
 	log.Info("Pnk is starting")
 
-	models.CheckConnection()
+	db.InitConnection()
 
-	addr := fmt.Sprintf("%s:%d", configuration.HostAddress, configuration.Port)
+	addr := fmt.Sprintf("%s:%d", core.Config.HostAddress, core.Config.Port)
 
 	router := lib.NewRouter([]lib.Mountable{
 		&admin.Routes{},
@@ -52,7 +53,7 @@ func initLogger() {
 		DisableLevelTruncation: true,
 	})
 
-	if configuration.Debug {
+	if core.Config.Debug {
 		log.SetLevel(log.DebugLevel)
 	}
 }

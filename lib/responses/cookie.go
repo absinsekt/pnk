@@ -3,7 +3,7 @@ package responses
 import (
 	"time"
 
-	cfg "github.com/absinsekt/pnk/lib/configuration"
+	"github.com/absinsekt/pnk/lib/core"
 	"github.com/valyala/fasthttp"
 )
 
@@ -22,7 +22,7 @@ func NewCookie(ctx *fasthttp.RequestCtx, cookie *Cookie) *fasthttp.Cookie {
 	result.SetKey(cookie.Name)
 	result.SetValue(cookie.Value)
 	result.SetHTTPOnly(true)
-	result.SetSecure(!cfg.Debug)
+	result.SetSecure(!core.Config.Debug)
 
 	if cookie.Path == "" {
 		result.SetPath("/")
