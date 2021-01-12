@@ -19,11 +19,12 @@ import (
 
 func main() {
 	core.InitConfiguration(nil)
+	core.InitLogger()
 
-	initLogger()
 	log.Info("Pnk is starting")
 
 	db.InitConnection()
+	templateset.InitTemplateSet()
 
 	addr := fmt.Sprintf("%s:%d", core.Config.HostAddress, core.Config.Port)
 
@@ -32,8 +33,6 @@ func main() {
 		&www.Routes{},
 		&api.Routes{},
 	})
-
-	templateset.InitTemplateSet()
 
 	srv := &fasthttp.Server{
 		Name:              "pnk",
@@ -45,15 +44,4 @@ func main() {
 
 	log.Infof("Listening on http://%s/", addr)
 	log.Fatalln(srv.ListenAndServe(addr))
-}
-
-func initLogger() {
-	log.SetFormatter(&log.TextFormatter{
-		FullTimestamp:          true,
-		DisableLevelTruncation: true,
-	})
-
-	if core.Config.Debug {
-		log.SetLevel(log.DebugLevel)
-	}
 }
