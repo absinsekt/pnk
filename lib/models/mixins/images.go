@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/disintegration/imaging"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/absinsekt/pnk/lib/core"
 )
@@ -19,13 +20,17 @@ type Thumbnailable struct {
 }
 
 // GetThumbnail checks if a thumbnail with given params exists or generates it on disk
-func (f *Thumbnailable) GetThumbnail(width, height int) string {
+func (f *Thumbnailable) GetThumbnail(width, height, quality int) string {
+	if f.Image == "" {
+		return ""
+	}
+
 	thumbPath := getThumbnailPath(f.Image, width, height)
 	thumbDiskPath := path.Join(core.Config.MediaPath, thumbPath)
 	srcDiskPath := path.Join(core.Config.MediaPath, f.Image)
 
 	if !checkIfExists(thumbDiskPath) {
-		generateThumb(srcDiskPath, thumbDiskPath, width, height)
+		generateThumb(srcDiskPath, thumbDiskPath, width, height, quality)
 	}
 
 	return path.Join(core.Config.MediaURL, thumbPath)
@@ -53,24 +58,10 @@ func checkIfExists(filePath string) bool {
 	return true
 }
 
-func generateThumb(srcPath string, thumbPath string, width, height int) {
-	var (
-		imgOptions imaging.EncodeOption
-		err        error
-	)
+func generateThumb(srcPath string, thumbPath string, width, height, quality int) {
+	var err error
 
-	ext := strings.TrimPrefix(path.Ext(srcPath), ".")
-
-	switch ext {
-	case imaging.JPEG.String():
-		imgOptions = imaging.JPEGQuality(80)
-
-	case imaging.PNG.String():
-		imgOptions = imaging.PNGCompressionLevel(png.BestCompression)
-
-	default:
-		imgOptions = nil
-	}
+	log.Debugf("Generating thumbnail for %s", srcPath)
 
 	err = os.MkdirAll(path.Dir(thumbPath), 0o755)
 	core.Check(err, false)
@@ -80,6 +71,19 @@ func generateThumb(srcPath string, thumbPath string, width, height int) {
 
 	src = imaging.Fill(src, width, height, imaging.Center, imaging.Lanczos)
 
-	err = imaging.Save(src, thumbPath, imgOptions)
+	format, err := imaging.FormatFromFilename(srcPath)
+	core.Check(err, false)
+
+	switch format {
+	case imaging.JPEG:
+		err = imaging.Save(src, thumbPath, imaging.JPEGQuality(quality))
+
+	case imaging.PNG:
+		err = imaging.Save(src, thumbPath, imaging.PNGCompressionLevel(png.BestCompression))
+
+	default:
+		err = imaging.Save(src, thumbPath)
+	}
+
 	core.Check(err, false)
 }
