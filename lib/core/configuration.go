@@ -29,19 +29,22 @@ func InitConfiguration(overrides map[string]interface{}) {
 	secondsFrequently, _ := time.ParseDuration(fmt.Sprintf("%ds", overrider(envSecondsFrequently, 30).(int)))
 
 	Config = &configuration{
-		Debug:          overrider(envDebug, false).(bool),
-		HostAddress:    overrider(envHost, "127.0.0.1").(string),
-		Port:           overrider(envPort, 5000).(int),
-		TemplatePath:   overrider(envTemplatePath, "templates").(string),
-		DbHost:         overrider(envDBHost, "127.0.0.1").(string),
-		DbName:         overrider(envDBName, "pnk_db").(string),
-		DbUser:         overrider(envDBUser, "punk").(string),
-		DbPassword:     overrider(envDBPassword, "punksnotdead").(string),
-		SMTPHost:       overrider(envSMTPHost, "smtp.gmail.com").(string),
-		SMTPPort:       overrider(envSMTPPort, 465).(int),
-		SMTPUser:       overrider(envSMTPUser, "google@gmail.com").(string),
-		SMTPPassword:   overrider(envSMTPPassword, "punksnotdead").(string),
-		SessionVersion: overrider(envSessionVersion, strings.GenerateRandomString(8)).(string),
+		Debug:            overrider(envDebug, false).(bool),
+		HostAddress:      overrider(envHost, "127.0.0.1").(string),
+		Port:             overrider(envPort, 5000).(int),
+		TemplatePath:     overrider(envTemplatePath, "templates").(string),
+		MediaPath:        overrider(envMediaPath, "uploads").(string),
+		MediaURL:         overrider(envMediaURL, "/media").(string),
+		ThumbnailsPrefix: overrider(envThumbnailsPrefix, "thumbs").(string),
+		DbHost:           overrider(envDBHost, "127.0.0.1").(string),
+		DbName:           overrider(envDBName, "pnk_db").(string),
+		DbUser:           overrider(envDBUser, "punk").(string),
+		DbPassword:       overrider(envDBPassword, "punksnotdead").(string),
+		SMTPHost:         overrider(envSMTPHost, "smtp.gmail.com").(string),
+		SMTPPort:         overrider(envSMTPPort, 465).(int),
+		SMTPUser:         overrider(envSMTPUser, "google@gmail.com").(string),
+		SMTPPassword:     overrider(envSMTPPassword, "punksnotdead").(string),
+		SessionVersion:   overrider(envSessionVersion, strings.GenerateRandomString(8)).(string),
 		SecureVault: securecookie.New(
 			[]byte(secureAuthKey),
 			[]byte(secureEncryptionKey),
@@ -56,6 +59,9 @@ type configuration struct {
 	HostAddress       string
 	Port              int
 	TemplatePath      string
+	MediaPath         string
+	MediaURL          string
+	ThumbnailsPrefix  string
 	DbHost            string
 	DbName            string
 	DbUser            string
@@ -75,6 +81,9 @@ const (
 	envHost                = "PNK_HOST"
 	envPort                = "PNK_PORT"
 	envTemplatePath        = "PNK_TEMPLATE_PATH"
+	envMediaPath           = "PNK_MEDIA_PATH"
+	envMediaURL            = "PNK_MEDIA_URL"
+	envThumbnailsPrefix    = "PNK_THUMBNAILS_PREFIX"
 	envDBHost              = "PNK_DB_HOST"
 	envDBName              = "PNK_DB_NAME"
 	envDBUser              = "PNK_DB_USER"

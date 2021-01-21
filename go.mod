@@ -3,6 +3,7 @@ module github.com/absinsekt/pnk
 go 1.14
 
 require (
+	github.com/disintegration/imaging v1.6.2
 	github.com/fasthttp/router v1.3.2
 	github.com/go-pg/pg/v10 v10.3.2
 	github.com/gorilla/securecookie v1.1.1
