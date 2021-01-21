@@ -1,7 +1,7 @@
 package responses
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/absinsekt/pnk/lib/templateset"
 	"github.com/valyala/fasthttp"
@@ -16,8 +16,5 @@ func ErrorResponse(ctx *fasthttp.RequestCtx, status int) {
 		return
 	}
 
-	errorTemplate := fmt.Sprintf("errors/%d.html", status)
-
-	ctx.Response.SetStatusCode(status)
-	templateset.Templates.Render(ctx, errorTemplate, nil)
+	templateset.Templates.RenderError(ctx, http.StatusNotFound)
 }

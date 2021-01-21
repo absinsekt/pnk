@@ -4,15 +4,17 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/absinsekt/pnk/lib/core"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
+
+	"github.com/absinsekt/pnk/lib/core"
 )
 
 /*
@@ -54,6 +56,8 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 
 		if core.Config.Debug {
 			ctx.WriteString(msg)
+		} else {
+			t.RenderError(ctx, http.StatusNotFound)
 		}
 
 		return
@@ -72,6 +76,14 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 		templateName,
 		time.Now().Sub(timerStart).Seconds()*1000,
 	)
+}
+
+// RenderError renders error page with status code set
+func (t *TemplateSet) RenderError(ctx *fasthttp.RequestCtx, status int) {
+	errorTemplate := fmt.Sprintf("errors/%d.html", status)
+
+	ctx.Response.SetStatusCode(status)
+	t.Render(ctx, errorTemplate, nil)
 }
 
 // ReloadTemplates reloads all templates from templateDir
