@@ -41,6 +41,13 @@ func InitTemplateSet() error {
 	return nil
 }
 
+// IsExist checks if a given template exist and returns it
+func (t *TemplateSet) IsExist(templateName string) (tmpl *template.Template, ok bool) {
+	tmpl, ok = t.templateCache[templateName]
+
+	return
+}
+
 // Render todo
 func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data map[string]interface{}) {
 	timerStart := time.Now()
@@ -49,8 +56,21 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 		t.ReloadTemplates(true)
 	}
 
-	found := t.templateCache[templateName]
-	if found == nil {
+	if found, ok := t.IsExist(templateName); ok == true {
+		tmpl := found.Lookup(templateName)
+
+		ctx.SetContentType("text/html")
+
+		if err := tmpl.Execute(ctx.Response.BodyWriter(), data); err != nil {
+			log.Error(err)
+		}
+
+		log.Debugf(
+			"Template %s rendered in %.2fms",
+			templateName,
+			time.Now().Sub(timerStart).Seconds()*1000,
+		)
+	} else {
 		msg := fmt.Sprintf("Template `%s` not found", templateName)
 		log.Debug(msg)
 
@@ -59,23 +79,7 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 		} else {
 			t.RenderError(ctx, http.StatusNotFound)
 		}
-
-		return
 	}
-
-	tmpl := found.Lookup(templateName)
-
-	ctx.SetContentType("text/html")
-
-	if err := tmpl.Execute(ctx.Response.BodyWriter(), data); err != nil {
-		log.Error(err)
-	}
-
-	log.Debugf(
-		"Template %s rendered in %.2fms",
-		templateName,
-		time.Now().Sub(timerStart).Seconds()*1000,
-	)
 }
 
 // RenderError renders error page with status code set
