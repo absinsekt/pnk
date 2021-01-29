@@ -19,18 +19,19 @@ type Thumbnailable struct {
 	Image string `pg:"type:varchar(256)"`
 }
 
-// GetThumbnail checks if a thumbnail with given params exists or generates it on disk
-func (f *Thumbnailable) GetThumbnail(width, height, quality int) string {
-	if f.Image == "" {
+// Thumbnail checks if a thumbnail with given params exists or generates it on disk
+func (th *Thumbnailable) Thumbnail(width, height, quality int) string {
+	if th.Image == "" {
 		return ""
 	}
 
-	thumbPath := getThumbnailPath(f.Image, width, height)
+	thumbPath := getThumbnailPath(th.Image, width, height)
 	thumbDiskPath := path.Join(core.Config.MediaPath, thumbPath)
-	srcDiskPath := path.Join(core.Config.MediaPath, f.Image)
+	srcDiskPath := path.Join(core.Config.MediaPath, th.Image)
 
 	if !checkIfExists(thumbDiskPath) {
-		generateThumb(srcDiskPath, thumbDiskPath, width, height, quality)
+		go generateThumb(srcDiskPath, thumbDiskPath, width, height, quality)
+		return path.Join(core.Config.MediaURL, th.Image)
 	}
 
 	return path.Join(core.Config.MediaURL, thumbPath)

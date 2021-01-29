@@ -12,6 +12,8 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/tdewolff/minify/v2"
+	"github.com/tdewolff/minify/v2/html"
 	"github.com/valyala/fasthttp"
 
 	"github.com/absinsekt/pnk/lib/core"
@@ -25,11 +27,17 @@ const (
 	sharedPathFolder = "shared"
 )
 
-// Templates global templateset
-var Templates *TemplateSet
+var (
+	// Templates global templateset
+	Templates *TemplateSet
+
+	minifier = minify.New()
+)
 
 // InitTemplateSet creates templateSet instance
 func InitTemplateSet() error {
+	minifier.AddFunc("text/html", html.Minify)
+
 	Templates = &TemplateSet{
 		templateDir:   core.Config.TemplatePath,
 		templateCache: map[string]*template.Template{},
@@ -61,8 +69,18 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 
 		ctx.SetContentType("text/html")
 
-		if err := tmpl.Execute(ctx.Response.BodyWriter(), data); err != nil {
-			log.Error(err)
+		if core.Config.Debug {
+			if err := tmpl.Execute(ctx.Response.BodyWriter(), data); err != nil {
+				log.Error(err)
+			}
+		} else {
+			mw := minifier.Writer("text/html", ctx.Response.BodyWriter())
+
+			if err := tmpl.Execute(mw, data); err != nil {
+				log.Error(err)
+			}
+
+			mw.Close()
 		}
 
 		log.Debugf(
