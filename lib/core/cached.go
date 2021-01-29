@@ -1,13 +1,16 @@
 package core
 
-import "time"
+import (
+	"time"
+)
 
+// Method generic cacheable function
 type Method func() (interface{}, error)
 
 type cached struct {
-	Frequency    time.Duration
-	Result       interface{}
-	LastModified time.Time
+	CreatedAt  time.Time
+	Expiration time.Duration
+	Result     interface{}
 }
 
 var (
@@ -15,29 +18,39 @@ var (
 )
 
 // GetCached returns cached result of a func
-func GetCached(key string, frequency time.Duration, method Method) (interface{}, error) {
+func GetCached(key string, expiration time.Duration, method Method) (interface{}, error) {
 	var (
 		result interface{}
 		err    error
 	)
 
-	isOutdated := store[key].LastModified.Add(store[key].Frequency).Before(time.Now())
+	go flushExpired()
 
-	if store[key].Result == nil || isOutdated {
+	if store[key].Result == nil {
 		result, err = method()
 
 		if err == nil {
 			store[key] = cached{
-				Frequency:    frequency,
-				Result:       result,
-				LastModified: time.Now(),
+				CreatedAt:  time.Now(),
+				Expiration: expiration,
+				Result:     result,
 			}
 
 			return store[key].Result, nil
-		} else {
-			return nil, err
 		}
+
+		return nil, err
 	}
 
 	return store[key].Result, nil
+}
+
+func flushExpired() {
+	for key, value := range store {
+		isOutdated := value.CreatedAt.Add(store[key].Expiration).Before(time.Now())
+
+		if isOutdated {
+			delete(store, key)
+		}
+	}
 }
