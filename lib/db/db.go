@@ -2,7 +2,6 @@ package db
 
 import (
 	"github.com/go-pg/pg/v10"
-	"github.com/go-pg/pg/v10/orm"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/absinsekt/pnk/lib/core"
@@ -32,9 +31,4 @@ func CheckConnection() {
 
 	_, err := Pool.ExecOne("SELECT 1")
 	core.Check(err, true)
-}
-
-// RegisterTable todo
-func RegisterTable(strct interface{}) {
-	orm.RegisterTable(strct)
 }
