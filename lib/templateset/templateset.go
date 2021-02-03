@@ -1,6 +1,7 @@
 package templateset
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -14,7 +15,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/html"
-	"github.com/valyala/fasthttp"
 
 	"github.com/absinsekt/pnk/lib/core"
 )
@@ -57,24 +57,23 @@ func (t *TemplateSet) IsExist(templateName string) (tmpl *template.Template, ok 
 }
 
 // Render todo
-func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data map[string]interface{}) {
+func (t *TemplateSet) Render(templateName string, data map[string]interface{}) ([]byte, bool) {
+	buf := bytes.Buffer{}
 	timerStart := time.Now()
 
 	if core.Config.Debug == true {
 		t.ReloadTemplates(true)
 	}
 
-	if found, ok := t.IsExist(templateName); ok == true {
+	if found, ok := t.IsExist(templateName); ok {
 		tmpl := found.Lookup(templateName)
 
-		ctx.SetContentType("text/html")
-
 		if core.Config.Debug {
-			if err := tmpl.Execute(ctx.Response.BodyWriter(), data); err != nil {
+			if err := tmpl.Execute(&buf, data); err != nil {
 				log.Error(err)
 			}
 		} else {
-			mw := minifier.Writer("text/html", ctx.Response.BodyWriter())
+			mw := minifier.Writer("text/html", &buf)
 
 			if err := tmpl.Execute(mw, data); err != nil {
 				log.Error(err)
@@ -93,19 +92,20 @@ func (t *TemplateSet) Render(ctx *fasthttp.RequestCtx, templateName string, data
 		log.Debug(msg)
 
 		if core.Config.Debug {
-			ctx.WriteString(msg)
+			buf.WriteString(msg)
 		} else {
-			t.RenderError(ctx, http.StatusNotFound)
+			return t.RenderError(http.StatusNotFound)
 		}
 	}
+
+	return buf.Bytes(), true
 }
 
 // RenderError renders error page with status code set
-func (t *TemplateSet) RenderError(ctx *fasthttp.RequestCtx, status int) {
+func (t *TemplateSet) RenderError(status int) ([]byte, bool) {
 	errorTemplate := fmt.Sprintf("errors/%d.html", status)
 
-	ctx.Response.SetStatusCode(status)
-	t.Render(ctx, errorTemplate, nil)
+	return t.Render(errorTemplate, nil)
 }
 
 // ReloadTemplates reloads all templates from templateDir

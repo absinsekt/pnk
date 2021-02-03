@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// Method generic cacheable function
-type Method func() (interface{}, error)
+// CacheMethod generic cacheable function
+type CacheMethod func() (interface{}, error)
 
 type cached struct {
 	CreatedAt  time.Time
@@ -19,18 +19,20 @@ var (
 )
 
 // GetCached returns cached result of a func
-func GetCached(key string, expiration time.Duration, method Method) (interface{}, error) {
+func GetCached(key string, expiration time.Duration, cache CacheMethod) (interface{}, error) {
 	var (
 		result interface{}
 		err    error
 	)
 
-	if val, ok := store.Load(key); ok {
-		go flushExpired()
-		return val.(cached).Result, nil
+	if !Config.Debug {
+		if val, ok := store.Load(key); ok {
+			go flushExpired()
+			return val.(cached).Result, nil
+		}
 	}
 
-	result, err = method()
+	result, err = cache()
 
 	if err == nil {
 		store.Store(key, cached{

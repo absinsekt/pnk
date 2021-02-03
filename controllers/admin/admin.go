@@ -23,7 +23,9 @@ func (r *Routes) Mount(root *router.Router) {
 }
 
 func (r *Routes) indexHandler(ctx *fasthttp.RequestCtx) {
-	templateset.Templates.Render(ctx, "admin/index.html", map[string]interface{}{
+	if data, ok := templateset.Templates.Render("admin/index.html", map[string]interface{}{
 		csrf.TokenField: ctx.UserValue(csrf.TokenCookieName),
-	})
+	}); ok {
+		responses.OkResponse(ctx, data)
+	}
 }
