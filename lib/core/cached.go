@@ -1,6 +1,7 @@
 package core
 
 import (
+	"sync"
 	"time"
 )
 
@@ -14,7 +15,7 @@ type cached struct {
 }
 
 var (
-	store = make(map[string]cached)
+	store = sync.Map{}
 )
 
 // GetCached returns cached result of a func
@@ -24,33 +25,35 @@ func GetCached(key string, expiration time.Duration, method Method) (interface{}
 		err    error
 	)
 
-	go flushExpired()
-
-	if store[key].Result == nil {
-		result, err = method()
-
-		if err == nil {
-			store[key] = cached{
-				CreatedAt:  time.Now(),
-				Expiration: expiration,
-				Result:     result,
-			}
-
-			return store[key].Result, nil
-		}
-
-		return nil, err
+	if val, ok := store.Load(key); ok {
+		go flushExpired()
+		return val.(cached).Result, nil
 	}
 
-	return store[key].Result, nil
+	result, err = method()
+
+	if err == nil {
+		store.Store(key, cached{
+			CreatedAt:  time.Now(),
+			Expiration: expiration,
+			Result:     result,
+		})
+
+		return result, nil
+	}
+
+	return nil, err
 }
 
 func flushExpired() {
-	for key, value := range store {
-		isOutdated := value.CreatedAt.Add(store[key].Expiration).Before(time.Now())
+	store.Range(func(key, value interface{}) bool {
+		val := value.(cached)
+		isOutdated := val.CreatedAt.Add(val.Expiration).Before(time.Now())
 
 		if isOutdated {
-			delete(store, key)
+			store.Delete(key)
 		}
-	}
+
+		return true
+	})
 }
