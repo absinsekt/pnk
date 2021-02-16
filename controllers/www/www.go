@@ -24,6 +24,6 @@ func (r *Routes) indexHandler(ctx *fasthttp.RequestCtx) {
 	if data, ok := templateset.Templates.Render("index.html", map[string]interface{}{
 		csrf.TokenField: ctx.UserValue(csrf.TokenCookieName),
 	}); ok {
-		responses.OkResponse(ctx, data)
+		responses.SuccessHTML(ctx, data)
 	}
 }

@@ -25,7 +25,7 @@ func GetCached(key string, expiration time.Duration, cache CacheMethod) (interfa
 		err    error
 	)
 
-	if !Config.Debug {
+	if Config.CacheEnabled {
 		if val, ok := store.Load(key); ok {
 			go flushExpired()
 			return val.(cached).Result, nil

@@ -36,6 +36,7 @@ func InitConfiguration(overrides map[string]interface{}) {
 		MediaPath:        overrider(envMediaPath, "uploads").(string),
 		MediaURL:         overrider(envMediaURL, "/media").(string),
 		ThumbnailsPrefix: overrider(envThumbnailsPrefix, "thumbs").(string),
+		CacheEnabled:     overrider(envCacheEnabled, true).(bool),
 		DbHost:           overrider(envDBHost, "127.0.0.1").(string),
 		DbName:           overrider(envDBName, "pnk_db").(string),
 		DbUser:           overrider(envDBUser, "punk").(string),
@@ -62,6 +63,7 @@ type configuration struct {
 	MediaPath         string
 	MediaURL          string
 	ThumbnailsPrefix  string
+	CacheEnabled      bool
 	DbHost            string
 	DbName            string
 	DbUser            string
@@ -84,6 +86,7 @@ const (
 	envMediaPath           = "PNK_MEDIA_PATH"
 	envMediaURL            = "PNK_MEDIA_URL"
 	envThumbnailsPrefix    = "PNK_THUMBNAILS_PREFIX"
+	envCacheEnabled        = "PNK_CACHE_ENABLED"
 	envDBHost              = "PNK_DB_HOST"
 	envDBName              = "PNK_DB_NAME"
 	envDBUser              = "PNK_DB_USER"
