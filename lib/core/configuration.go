@@ -27,8 +27,11 @@ func InitConfiguration(overrides map[string]interface{}) {
 	secureEncryptionKey := overrider(envSecureEncryptionKey, strings.GenerateRandomString(32)).(string)
 	secondsRarely, _ := time.ParseDuration(fmt.Sprintf("%ds", overrider(envSecondsRarely, 180).(int)))
 	secondsFrequently, _ := time.ParseDuration(fmt.Sprintf("%ds", overrider(envSecondsFrequently, 30).(int)))
+	tzLocation, _ := time.LoadLocation(overrider(envTimezoneName, "Etc/UTC").(string))
 
 	Config = &configuration{
+		ProjectName:      overrider(envProjectName, "PNK").(string),
+		BaseURL:          overrider(envBaseURL, "http://localhost/").(string),
 		Debug:            overrider(envDebug, false).(bool),
 		HostAddress:      overrider(envHost, "127.0.0.1").(string),
 		Port:             overrider(envPort, 5000).(int),
@@ -52,10 +55,13 @@ func InitConfiguration(overrides map[string]interface{}) {
 		),
 		SecondsRarely:     secondsRarely,
 		SecondsFrequently: secondsFrequently,
+		Timezone:          tzLocation,
 	}
 }
 
 type configuration struct {
+	ProjectName       string
+	BaseURL           string
 	Debug             bool
 	HostAddress       string
 	Port              int
@@ -76,9 +82,12 @@ type configuration struct {
 	SecureVault       *securecookie.SecureCookie
 	SecondsRarely     time.Duration
 	SecondsFrequently time.Duration
+	Timezone          *time.Location
 }
 
 const (
+	envProjectName         = "PNK_PROJECT_NAME"
+	envBaseURL             = "PNK_BASE_URL"
 	envDebug               = "PNK_DEBUG"
 	envHost                = "PNK_HOST"
 	envPort                = "PNK_PORT"
@@ -100,4 +109,5 @@ const (
 	envSMTPUser            = "PNK_SMTP_USER"
 	envSMTPPassword        = "PNK_SMTP_PASSWORD"
 	envSessionVersion      = "PNK_SESSION_VERSION"
+	envTimezoneName        = "PNK_TIMEZONE_NAME"
 )

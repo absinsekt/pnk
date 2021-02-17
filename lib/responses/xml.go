@@ -12,8 +12,8 @@ const (
 	ContentTypeRss = "application/rss+xml"
 	// ContentTypeAtom application/atom+xml
 	ContentTypeAtom = "application/atom+xml"
-	// ContentTypeTextXML text/xml
-	ContentTypeTextXML = "text/xml"
+	// ContentTypeApplicationXML application/xml
+	ContentTypeApplicationXML = "application/xml"
 )
 
 // SuccessXML writes []byte data to ResponseWriter setting status 200 and content type
