@@ -17,6 +17,7 @@ import (
 	"github.com/tdewolff/minify/v2/html"
 
 	"github.com/absinsekt/pnk/lib/core"
+	"github.com/absinsekt/pnk/lib/templateset/tags"
 )
 
 /*
@@ -64,6 +65,12 @@ func (t *TemplateSet) Render(templateName string, data map[string]interface{}) (
 	if core.Config.Debug == true {
 		t.ReloadTemplates(true)
 	}
+
+	if data == nil {
+		data = map[string]interface{}{}
+	}
+
+	data["_"] = tags.Funcs
 
 	if found, ok := t.IsExist(templateName); ok {
 		tmpl := found.Lookup(templateName)
