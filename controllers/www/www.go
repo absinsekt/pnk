@@ -17,7 +17,6 @@ func (r *Routes) Mount(root *router.Router) {
 	group := root.Group("")
 
 	group.GET("/", csrf.InjectToken(r.indexHandler))
-	group.ANY("/", responses.DummyResponseHandler)
 }
 
 func (r *Routes) indexHandler(ctx *fasthttp.RequestCtx) {
