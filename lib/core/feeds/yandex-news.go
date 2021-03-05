@@ -96,7 +96,7 @@ func (yn *YandexNews) ToXML() interface{} {
 			item.Content = i.GetPlainBody()
 		}
 
-		if i.Attachment != nil && i.Attachment.Type != "" && i.Attachment.Length != 0 {
+		if i.Attachment != nil && i.Attachment.Type != "" {
 			item.Enclosure = &rssEnclosure{
 				URL:    i.Attachment.URL,
 				Type:   i.Attachment.Type,

@@ -53,7 +53,7 @@ type rssContent struct {
 }
 
 type rssEnclosure struct {
-	Length uint64 `xml:"length,attr"`
+	Length uint64 `xml:"length,attr,omitempty"`
 	Type   string `xml:"type,attr"`
 	URL    string `xml:"url,attr"`
 }
@@ -106,7 +106,7 @@ func (rss *Rss) ToXML() interface{} {
 			item.Content = &rssContent{Content: i.Content}
 		}
 
-		if i.Attachment != nil && i.Attachment.Type != "" && i.Attachment.Length != 0 {
+		if i.Attachment != nil && i.Attachment.Type != "" {
 			item.Enclosure = &rssEnclosure{
 				URL:    i.Attachment.URL,
 				Type:   i.Attachment.Type,
