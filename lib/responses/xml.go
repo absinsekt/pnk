@@ -25,7 +25,7 @@ func SuccessXML(ctx *fasthttp.RequestCtx, contentType string, data interface{}) 
 
 	if buf, err = xml.Marshal(data); err != nil {
 		ctx.SetStatusCode(http.StatusInternalServerError)
-		return
+		panic(err)
 	}
 
 	ctx.SetStatusCode(http.StatusOK)

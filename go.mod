@@ -7,6 +7,7 @@ require (
 	github.com/fasthttp/router v1.3.2
 	github.com/go-pg/pg/v10 v10.3.2
 	github.com/gorilla/securecookie v1.1.1
+	github.com/microcosm-cc/bluemonday v1.0.4
 	github.com/sirupsen/logrus v1.7.0
 	github.com/tdewolff/minify/v2 v2.9.11
 	github.com/valyala/fasthttp v1.16.0
